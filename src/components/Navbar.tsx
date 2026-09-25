@@ -134,7 +134,7 @@ export default function Navbar() {
           {/* ============ CTA BUTTON ============ */}
           <li className="ml-2">
             <Link
-              href="/contact"
+              href="/signup"
               className="relative inline-block px-5 py-2 rounded-full text-sm tracking-wide
                          border border-white/20 overflow-hidden group
                          focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
@@ -212,7 +212,7 @@ export default function Navbar() {
               })}
               <li className="mt-3">
                 <Link
-                  href="/contact"
+                  href="/signup"
                   className="block w-full text-center px-5 py-3 rounded-full text-sm tracking-wide
                              border border-white/20 hover:bg-white hover:text-black transition-colors"
                 >
