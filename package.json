@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@better-auth/mongo-adapter": "^1.7.6",
     "@heroui/react": "^3.2.6",
     "@heroui/styles": "^3.2.6",
+    "better-auth": "^1.7.6",
     "framer-motion": "^13.4.4",
     "lucide": "^1.48.0",
     "lucide-react": "^1.48.0",

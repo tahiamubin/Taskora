@@ -1,23 +1,15 @@
 "use client";
 
-import {
-  Button,
-  FieldError,
-  Form,
-  Input,
-  Label,
-  TextField,
-} from "@heroui/react";
+import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
-import { CgProfile } from "react-icons/cg";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
 
 type SignInValues = {
   email: string;
   password: string;
-};
+}
 
 const socialProviders = [
   { name: "Facebook", icon: FaFacebookF },
@@ -30,7 +22,7 @@ const inputClass =
   "placeholder:text-white/40 outline-none transition-colors " +
   "hover:border-blue-500/50 focus:border-blue-500/80 focus:ring-2 focus:ring-blue-500/20";
 
-export default function SignUpPage() {
+export default function SignInPage() {
   const [mounted, setMounted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,9 +34,7 @@ export default function SignUpPage() {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const values = Object.fromEntries(
-      formData.entries(),
-    ) as unknown as SignInValues;
+    const values = Object.fromEntries(formData.entries()) as unknown as SignInValues;
 
     setLoading(true);
     try {
@@ -72,39 +62,15 @@ export default function SignUpPage() {
 
           <div className="relative">
             <h1 className="text-center text-5xl font-medium tracking-tight text-white">
-              Create Your Account
+              Log in
             </h1>
             <p className="mx-auto mt-5 max-w-sm text-center text-base leading-relaxed text-white/60">
-              Learn and grow
+              Log in to your account and continue tracking your problems,
+              contests, and progress where you left off.
             </p>
 
             <Form onSubmit={onSubmit} className="mt-12 w-full space-y-4">
-              <TextField
-                isRequired
-                name="email"
-                type="email"
-                className="w-full"
-              >
-                <Label className="sr-only">Name</Label>
-                <div className="relative">
-                  <CgProfile
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-lg text-white/40"
-                  />
-                  <Input
-                    placeholder="Enter your name"
-                    autoComplete="email"
-                    className={inputClass}
-                  />
-                </div>
-                <FieldError className="mt-1 pl-5 text-sm text-red-400" />
-              </TextField>
-              <TextField
-                isRequired
-                name="email"
-                type="email"
-                className="w-full"
-              >
+              <TextField isRequired name="email" type="email" className="w-full">
                 <Label className="sr-only">Email</Label>
                 <div className="relative">
                   <FiMail
@@ -140,9 +106,7 @@ export default function SignUpPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                     className="absolute right-5 top-1/2 -translate-y-1/2 text-lg text-blue-500 transition-colors hover:text-blue-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 rounded-full"
                   >
                     {showPassword ? <FiEyeOff /> : <FiEye />}
@@ -156,7 +120,7 @@ export default function SignUpPage() {
                 isDisabled={loading}
                 className="mt-6 h-16 w-full rounded-full bg-[#1f2126] text-xl font-medium text-white transition-all duration-200 hover:bg-[#282b32] active:scale-[0.98]"
               >
-                {loading ? "Signing up..." : "Sign Up"}
+                {loading ? "Logging in…" : "Log in"}
               </Button>
             </Form>
 
@@ -177,10 +141,10 @@ export default function SignUpPage() {
             <p className="mt-7 text-center text-sm text-white/60">
               Don&apos;t have an account?{" "}
               <Link
-                href="/signin"
+                href="/signup"
                 className="text-blue-500 underline underline-offset-4 hover:text-blue-400"
               >
-                Sign in
+                Sign up
               </Link>
             </p>
           </div>
