@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import { authClient } from "@/src/lib/auth-client";
+import {
+  Button,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+} from "@heroui/react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
@@ -9,7 +17,8 @@ import { FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
 type SignInValues = {
   email: string;
   password: string;
-}
+
+};
 
 const socialProviders = [
   { name: "Facebook", icon: FaFacebookF },
@@ -34,12 +43,13 @@ export default function SignInPage() {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const values = Object.fromEntries(formData.entries()) as unknown as SignInValues;
+    const values = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as SignInValues;
 
     setLoading(true);
     try {
-      // Better Auth client call goes here, for example:
-      // await authClient.signIn.email({ email: values.email, password: values.password });
+      
       console.log(values);
     } finally {
       setLoading(false);
@@ -70,7 +80,12 @@ export default function SignInPage() {
             </p>
 
             <Form onSubmit={onSubmit} className="mt-12 w-full space-y-4">
-              <TextField isRequired name="email" type="email" className="w-full">
+              <TextField
+                isRequired
+                name="email"
+                type="email"
+                className="w-full"
+              >
                 <Label className="sr-only">Email</Label>
                 <div className="relative">
                   <FiMail
@@ -106,7 +121,9 @@ export default function SignInPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     className="absolute right-5 top-1/2 -translate-y-1/2 text-lg text-blue-500 transition-colors hover:text-blue-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60 rounded-full"
                   >
                     {showPassword ? <FiEyeOff /> : <FiEye />}

@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/src/lib/auth-client";
 import {
   Button,
   FieldError,
@@ -8,13 +9,17 @@ import {
   Label,
   TextField,
 } from "@heroui/react";
+import { string } from "better-auth";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
 
-type SignInValues = {
+type SignUpValues = {
+  name: string;
+  role: string;
   email: string;
   password: string;
 };
@@ -42,15 +47,16 @@ export default function SignUpPage() {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const values = Object.fromEntries(
-      formData.entries(),
-    ) as unknown as SignInValues;
+    const values = {
+      ...Object.fromEntries(formData.entries()),
+      role: "student",
+    } as SignUpValues;
 
     setLoading(true);
     try {
-      // Better Auth client call goes here, for example:
-      // await authClient.signIn.email({ email: values.email, password: values.password });
+      await authClient.signUp.email(values);
       console.log(values);
+      redirect('/')
     } finally {
       setLoading(false);
     }
@@ -81,8 +87,8 @@ export default function SignUpPage() {
             <Form onSubmit={onSubmit} className="mt-12 w-full space-y-4">
               <TextField
                 isRequired
-                name="email"
-                type="email"
+                name="name"
+                type="text"
                 className="w-full"
               >
                 <Label className="sr-only">Name</Label>
@@ -93,12 +99,13 @@ export default function SignUpPage() {
                   />
                   <Input
                     placeholder="Enter your name"
-                    autoComplete="email"
+                    autoComplete="text"
                     className={inputClass}
                   />
                 </div>
                 <FieldError className="mt-1 pl-5 text-sm text-red-400" />
               </TextField>
+
               <TextField
                 isRequired
                 name="email"

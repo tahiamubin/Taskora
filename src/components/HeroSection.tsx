@@ -1,228 +1,218 @@
-"use client";
-
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import {
-  CheckCircle2,
-  Circle,
-  Clock,
-  MoreHorizontal,
-  Search,
-  LayoutDashboard,
-  ListChecks,
-  Users,
-  Settings,
-  Bell,
-} from "lucide-react";
+import { FiArrowRight, FiCheckCircle, FiTerminal, FiTrendingUp, FiZap } from "react-icons/fi";
+import { FaCode, FaFire } from "react-icons/fa";
 
-const columns = [
+type Stat = {
+  label: string;
+  value: string;
+  hint: string;
+  icon: React.ReactNode;
+};
+
+const stats: Stat[] = [
   {
-    title: "To do",
-    tasks: [
-      { name: "Design onboarding flow", tag: "Design", due: "Fri", avatar: "MJ", color: "bg-violet-500" },
-      { name: "Write API docs for v2", tag: "Docs", due: "Mon", avatar: "AS", color: "bg-blue-500" },
-    ],
+    label: "Solved",
+    value: "428",
+    hint: "+12 this week",
+    icon: <FiCheckCircle className="h-4 w-4" />,
   },
   {
-    title: "In progress",
-    tasks: [
-      { name: "Rebuild notifications service", tag: "Backend", due: "Today", avatar: "RK", color: "bg-orange-500" },
-      { name: "QA pass on billing", tag: "QA", due: "Tomorrow", avatar: "TL", color: "bg-emerald-500" },
-      { name: "Landing page copy", tag: "Marketing", due: "Wed", avatar: "MJ", color: "bg-violet-500" },
-    ],
+    label: "Streak",
+    value: "21d",
+    hint: "Personal best",
+    icon: <FaFire className="h-4 w-4" />,
   },
   {
-    title: "Done",
-    tasks: [
-      { name: "Set up CI pipeline", tag: "DevOps", due: "Done", avatar: "AS", color: "bg-blue-500" },
-      { name: "User interviews round 2", tag: "Research", due: "Done", avatar: "RK", color: "bg-orange-500" },
-    ],
+    label: "Rank",
+    value: "#142",
+    hint: "Top 4%",
+    icon: <FiTrendingUp className="h-4 w-4" />,
   },
 ];
 
-const activity = [
-  { who: "Riya K.", what: "moved Billing QA to In progress", time: "2m ago" },
-  { who: "Alex S.", what: "commented on API docs v2", time: "18m ago" },
-  { who: "Maya J.", what: "completed User interviews round 2", time: "1h ago" },
+const languages: { name: string; pct: number }[] = [
+  { name: "TypeScript", pct: 72 },
+  { name: "C++", pct: 54 },
+  { name: "Python", pct: 38 },
 ];
 
-export default function Hero() {
-  const prefersReducedMotion = useReducedMotion();
+// Deterministic heatmap (no Math.random, so no hydration mismatch)
+const heatmap: number[] = Array.from({ length: 18 * 7 }, (_, i) => {
+  const v = (i * 7 + (i >> 2) * 3 + (i % 5)) % 11;
+  return v < 3 ? 0 : v < 5 ? 1 : v < 7 ? 2 : v < 9 ? 3 : 4;
+});
 
+const heatColors = [
+  "bg-white/[0.05]",
+  "bg-blue-500/20",
+  "bg-blue-500/40",
+  "bg-blue-500/65",
+  "bg-blue-400",
+];
+
+const Hero = () => {
   return (
-    <section className="relative bg-black text-white pt-36 pb-24 px-6 overflow-hidden">
-      <div className="max-w-5xl mx-auto text-center">
-        <motion.h1
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.1]"
-        >
-          Know what your team is working on.
-        </motion.h1>
+    <section
+      id="hero"
+      className="relative w-full overflow-hidden bg-[#070707] px-4 pb-24 pt-20 sm:px-8 lg:pt-28"
+    >
+      {/* Background: grid + glows */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
+      <div className="pointer-events-none absolute -left-40 top-24 h-[520px] w-[520px] rounded-full bg-blue-600/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 bottom-0 h-[480px] w-[480px] rounded-full bg-white/5 blur-3xl" />
 
-        <motion.p
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto"
-        >
-          Assign tasks, track progress, manage deadlines, and understand project
-          activity — all from one workspace.
-        </motion.p>
-
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <Link
-            href="/signup"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black
-                       text-sm font-medium hover:bg-gray-200 transition-colors
-                       focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/60"
-          >
-            Get started
-            <span aria-hidden="true">→</span>
-          </Link>
-          
-        </motion.div>
-      </div>
-
-      {/* ============ DASHBOARD PREVIEW ============ */}
-      <motion.div
-        initial={prefersReducedMotion ? false : { opacity: 0, y: 40, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-6xl mx-auto mt-20"
-      >
-        <div className="rounded-xl border border-white/10 bg-[#0a0a0a] shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_30px_80px_-20px_rgba(0,0,0,0.8)] overflow-hidden">
-          {/* Window chrome */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10 bg-[#0d0d0d]">
-            <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="ml-4 text-xs text-gray-500">app.taskora.com/projects/redesign</span>
+      <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
+        {/* Left: copy */}
+        <div className="text-center lg:text-left">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60">
+            <FiTerminal className="h-3.5 w-3.5 text-blue-500" />
+            <span>
+              <span className="text-blue-500">$</span> codetrail --track --grow
+            </span>
           </div>
 
-          <div className="flex text-left">
-            {/* Sidebar */}
-            <div className="hidden md:flex w-52 shrink-0 flex-col gap-1 border-r border-white/10 p-4">
-              <div className="text-sm font-semibold text-white mb-4">Taskora</div>
-              {[
-                { icon: LayoutDashboard, label: "Dashboard", active: true },
-                { icon: ListChecks, label: "Tasks", active: false },
-                { icon: Users, label: "Team", active: false },
-                { icon: Settings, label: "Settings", active: false },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className={`flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm ${
-                    item.active ? "bg-white/10 text-white" : "text-gray-400"
-                  }`}
-                >
-                  <item.icon className="w-4 h-4" />
-                  {item.label}
-                </div>
-              ))}
+          <h1 className="mt-6 text-4xl font-medium leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            Track Your Coding Journey.{" "}
+            <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-sky-300 bg-clip-text text-transparent">
+              Build Your Career.
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg lg:mx-0">
+            Log problems, projects and daily streaks in one place. See your
+            progress, spot your weak topics, and show recruiters real proof of
+            how far you have come.
+          </p>
+
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
+            <Link
+              href="/signup"
+              className="group inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-white px-8 text-base font-semibold text-black transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] active:scale-95 sm:w-auto"
+            >
+              Get Started
+              <FiArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <a
+              href="#features"
+              className="inline-flex h-14 w-full items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-8 text-base font-medium text-white/80 transition-all duration-300 hover:bg-white/[0.1] hover:text-white sm:w-auto"
+            >
+              Explore Features
+            </a>
+          </div>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs text-white/40 lg:justify-start">
+            <span>// free to start</span>
+            <span>// no credit card</span>
+            <span>// built for CSE students</span>
+          </div>
+        </div>
+
+        {/* Right: dashboard mockup */}
+        <div className="relative mx-auto w-full max-w-[560px]">
+          <div className="absolute -inset-4 rounded-[48px] bg-blue-600/10 blur-2xl" />
+
+          <div className="relative overflow-hidden rounded-[36px] border-2 border-white/10 bg-[#111111] shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-400/15 to-transparent" />
+            <div className="pointer-events-none absolute -left-20 top-1/3 h-56 w-40 rounded-full bg-blue-600/25 blur-3xl" />
+            <div className="pointer-events-none absolute -left-px top-[35%] h-[30%] w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
+
+            {/* Window chrome */}
+            <div className="relative flex items-center justify-between border-b border-white/5 px-6 py-4">
+              <div className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-red-400/70" />
+                <span className="h-3 w-3 rounded-full bg-yellow-400/70" />
+                <span className="h-3 w-3 rounded-full bg-green-400/70" />
+              </div>
+              <div className="flex items-center gap-2 font-mono text-xs text-white/40">
+                <FaCode className="h-3 w-3" />
+                dashboard.tsx
+              </div>
+              <FiZap className="h-4 w-4 text-blue-500" />
             </div>
 
-            {/* Main */}
-            <div className="flex-1 min-w-0">
-              {/* Top bar */}
-              <div className="flex items-center justify-between px-5 py-3 border-b border-white/10">
-                <div>
-                  <div className="text-sm font-semibold text-white">Product Redesign</div>
-                  <div className="text-xs text-gray-500">8 members · 12 tasks</div>
+            <div className="relative space-y-4 p-6">
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {stats.map((s) => (
+                  <div
+                    key={s.label}
+                    className="rounded-3xl border border-white/5 bg-black/50 p-4 shadow-[inset_-1px_0_0_rgba(59,130,246,0.35)]"
+                  >
+                    <div className="flex items-center gap-2 text-xs text-white/40">
+                      <span className="text-blue-500">{s.icon}</span>
+                      {s.label}
+                    </div>
+                    <p className="mt-2 text-2xl font-semibold text-white">
+                      {s.value}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-white/40">{s.hint}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Heatmap */}
+              <div className="rounded-3xl border border-white/5 bg-black/50 p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <p className="text-xs font-medium text-white/60">
+                    Activity
+                  </p>
+                  <p className="font-mono text-[11px] text-white/30">
+                    last 18 weeks
+                  </p>
                 </div>
-                <div className="hidden sm:flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-white/10 text-xs text-gray-400">
-                    <Search className="w-3.5 h-3.5" />
-                    Search
-                  </div>
-                  <Bell className="w-4 h-4 text-gray-500" />
-                  <div className="flex -space-x-2">
-                    {["MJ", "AS", "RK"].map((initials) => (
-                      <div
-                        key={initials}
-                        className="w-6 h-6 rounded-full bg-white/10 border border-black text-[10px]
-                                   flex items-center justify-center text-gray-300"
-                      >
-                        {initials}
-                      </div>
-                    ))}
-                  </div>
+                <div className="grid grid-flow-col grid-rows-7 gap-1">
+                  {heatmap.map((level, i) => (
+                    <span
+                      key={i}
+                      className={`aspect-square rounded-[3px] ${heatColors[level]}`}
+                    />
+                  ))}
                 </div>
               </div>
 
-              {/* Board + activity */}
-              <div className="flex flex-col lg:flex-row">
-                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 p-5">
-                  {columns.map((col) => (
-                    <div key={col.title} className="min-w-0">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-medium text-gray-400">
-                          {col.title} · {col.tasks.length}
-                        </span>
-                        <MoreHorizontal className="w-3.5 h-3.5 text-gray-600" />
+              {/* Languages */}
+              <div className="rounded-3xl border border-white/5 bg-black/50 p-4">
+                <p className="mb-3 text-xs font-medium text-white/60">
+                  Languages
+                </p>
+                <div className="space-y-3">
+                  {languages.map((l) => (
+                    <div key={l.name} className="flex items-center gap-3">
+                      <span className="w-20 font-mono text-xs text-white/50">
+                        {l.name}
+                      </span>
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400"
+                          style={{ width: `${l.pct}%` }}
+                        />
                       </div>
-                      <div className="flex flex-col gap-2.5">
-                        {col.tasks.map((task) => (
-                          <div
-                            key={task.name}
-                            className="rounded-lg border border-white/10 bg-white/[0.03] p-3"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <span className="text-xs text-gray-200 leading-snug">{task.name}</span>
-                              {col.title === "Done" ? (
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              ) : (
-                                <Circle className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-                              )}
-                            </div>
-                            <div className="flex items-center justify-between mt-3">
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-gray-400">
-                                {task.tag}
-                              </span>
-                              <div className="flex items-center gap-2">
-                                <span className="flex items-center gap-1 text-[10px] text-gray-500">
-                                  <Clock className="w-3 h-3" />
-                                  {task.due}
-                                </span>
-                                <div
-                                  className={`w-5 h-5 rounded-full ${task.color} text-[9px] text-white
-                                              flex items-center justify-center`}
-                                >
-                                  {task.avatar}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                      <span className="w-9 text-right font-mono text-xs text-white/40">
+                        {l.pct}%
+                      </span>
                     </div>
                   ))}
                 </div>
-
-                {/* Activity feed */}
-                <div className="hidden lg:block w-64 shrink-0 border-l border-white/10 p-5">
-                  <div className="text-xs font-medium text-gray-400 mb-3">Recent activity</div>
-                  <div className="flex flex-col gap-4">
-                    {activity.map((item) => (
-                      <div key={item.what} className="text-xs">
-                        <span className="text-gray-200">{item.who}</span>{" "}
-                        <span className="text-gray-500">{item.what}</span>
-                        <div className="text-[10px] text-gray-600 mt-0.5">{item.time}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
+
+          {/* Floating terminal card */}
+          <div className="absolute -bottom-8 -left-6 hidden w-64 rounded-3xl border border-white/10 bg-[#0c0c0c]/95 p-4 font-mono text-xs leading-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:block">
+            <p className="text-white/40">
+              <span className="text-blue-500">$</span> codetrail sync
+            </p>
+            <p className="text-green-400/90">✔ 3 problems solved</p>
+            <p className="text-green-400/90">✔ streak: 21 days</p>
+            <p className="text-white/40">
+              <span className="text-blue-500">$</span>
+              <span className="ml-1 inline-block h-3.5 w-1.5 translate-y-0.5 animate-pulse bg-white/70" />
+            </p>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
-}
+};
+
+export default Hero;
