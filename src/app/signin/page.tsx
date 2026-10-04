@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@heroui/react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { FaApple, FaFacebookF, FaGoogle } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiLock, FiMail } from "react-icons/fi";
@@ -49,8 +50,9 @@ export default function SignInPage() {
 
     setLoading(true);
     try {
-      
-      console.log(values);
+      await authClient.signIn.email(values)
+      redirect("/")
+      //console.log(values);
     } finally {
       setLoading(false);
     }
