@@ -3,12 +3,21 @@
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal } from "@heroui/react";
 
+type ProblemFormData = {
+  platform: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  solutionLink: string;
+  attempted: "yes" | "no";
+  concepts: string;
+  description: string;
+};
+
 export default function AddProblemModal() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    const data = Object.fromEntries(formData.entries()) as ProblemFormData;
 
     console.log("Problem data:", data);
   };
