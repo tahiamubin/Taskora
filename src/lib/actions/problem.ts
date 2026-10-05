@@ -2,6 +2,7 @@
 
 type ProblemFormData = {
   platform: string;
+  name: string;
   difficulty: "Easy" | "Medium" | "Hard";
   solutionLink: string;
   attempted: "yes" | "no";
@@ -9,7 +10,7 @@ type ProblemFormData = {
   description: string;
 };
 
-const baseUrl = process.env.BASEURL;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 
 export const createProblemLog = async (data: ProblemFormData) => {

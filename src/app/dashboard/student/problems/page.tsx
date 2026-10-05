@@ -1,12 +1,17 @@
-import AddProblemModal from "@/src/components/AddProblemModal";
+import AddProblemModal from '@/src/components/AddProblemModal';
+import { ProblemList } from '@/src/components/ProblemList';
+import { getAllProblem } from '@/src/lib/api/problem';
+import React from 'react';
 
-import { Button, Modal } from "@heroui/react";
-import { FaPlus } from "react-icons/fa";
-
-export default function ProblemsPage() {
+const ProblemLogPage = async() => {
+  const problem = await getAllProblem()
+  console.log(problem)
   return (
     <div>
+       <ProblemList problem={problem}/>
       <AddProblemModal />
     </div>
   );
-}
+};
+
+export default ProblemLogPage;

@@ -3,10 +3,10 @@
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal } from "@heroui/react";
 import { createProblemLog } from "../lib/actions/problem";
-import { toast } from "react-toastify";
 
 type ProblemFormData = {
   platform: string;
+  name: string;
   difficulty: "Easy" | "Medium" | "Hard";
   solutionLink: string;
   attempted: "yes" | "no";
@@ -15,15 +15,14 @@ type ProblemFormData = {
 };
 
 export default function AddProblemModal() {
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries()) as ProblemFormData;
 
-    //console.log("Problem data:", data);
-    await createProblemLog(data)
-   
+    console.log("Problem data:", data);
+    await createProblemLog(data);
   };
 
   return (
@@ -71,6 +70,19 @@ export default function AddProblemModal() {
                   <input
                     id="platform"
                     name="platform"
+                    required
+                    placeholder="e.g. LeetCode, Codeforces"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="name" className="text-gray-200">
+                    Problem Name
+                  </Label>
+                  <input
+                    id="name"
+                    name="name"
                     required
                     placeholder="e.g. LeetCode, Codeforces"
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
