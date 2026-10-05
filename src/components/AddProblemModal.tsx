@@ -2,6 +2,8 @@
 
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal } from "@heroui/react";
+import { createProblemLog } from "../lib/actions/problem";
+import { toast } from "react-toastify";
 
 type ProblemFormData = {
   platform: string;
@@ -13,13 +15,15 @@ type ProblemFormData = {
 };
 
 export default function AddProblemModal() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries()) as ProblemFormData;
 
-    console.log("Problem data:", data);
+    //console.log("Problem data:", data);
+    await createProblemLog(data)
+   
   };
 
   return (
