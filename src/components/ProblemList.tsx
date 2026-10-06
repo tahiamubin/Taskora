@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { editProblemLog } from "../lib/actions/problem";
 
 interface Problem {
   _id: string;
   name: string;
   platform: string;
-  difficulty: "Easy" | "Medium" | "Hard" | string;
-  attempted: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  attempted: "yes" | "no";
   concepts: string;
   description: string;
   solutionLink: string;
@@ -30,17 +32,21 @@ const emptyForm: Problem = {
   name: "",
   platform: "",
   difficulty: "Easy",
-  attempted: "",
+  attempted: "no",
   concepts: "",
   description: "",
   solutionLink: "",
 };
+
+const inputClass =
+  "bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30";
 
 export const ProblemList: React.FC<ProblemListProps> = ({
   problem,
   onUpdate,
   onDelete,
 }) => {
+  const router = useRouter();
   const [openDescription, setOpenDescription] = useState<string | null>(null);
   const [editProblem, setEditProblem] = useState<Problem | null>(null);
   const [formData, setFormData] = useState<Problem>(emptyForm);
@@ -61,11 +67,16 @@ export const ProblemList: React.FC<ProblemListProps> = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    if (formData && onUpdate) {
-      onUpdate(formData);
+  const handleSave = async () => {
+    try {
+      const { _id, ...data } = formData;
+      await editProblemLog(data, _id);
+      onUpdate?.(formData);
+      setEditProblem(null);
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to update problem:", error);
     }
-    setEditProblem(null);
   };
 
   return (
@@ -108,7 +119,6 @@ export const ProblemList: React.FC<ProblemListProps> = ({
 
             <span className="text-gray-300 truncate">{item.concepts}</span>
 
-            {/* Description Button */}
             <button
               onClick={() => setOpenDescription(item._id)}
               className="px-2 py-1 text-xs rounded-md bg-black/60 border border-white/10 text-gray-300 hover:text-white hover:bg-black/80 transition-colors"
@@ -125,7 +135,6 @@ export const ProblemList: React.FC<ProblemListProps> = ({
               Link
             </a>
 
-            {/* Actions */}
             <div className="flex gap-2">
               <button
                 onClick={() => handleEditClick(item)}
@@ -210,7 +219,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                   name="name"
                   value={formData.name}
                   onChange={handleFormChange}
-                  className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                  className={inputClass}
                 />
               </div>
 
@@ -221,7 +230,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                   name="platform"
                   value={formData.platform}
                   onChange={handleFormChange}
-                  className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                  className={inputClass}
                 />
               </div>
 
@@ -232,7 +241,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleFormChange}
-                    className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                    className={inputClass}
                   >
                     <option value="Easy">Easy</option>
                     <option value="Medium">Medium</option>
@@ -242,13 +251,15 @@ export const ProblemList: React.FC<ProblemListProps> = ({
 
                 <div className="flex flex-col gap-1">
                   <label className="text-xs text-gray-400">Attempted</label>
-                  <input
-                    type="text"
+                  <select
                     name="attempted"
                     value={formData.attempted}
                     onChange={handleFormChange}
-                    className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
-                  />
+                    className={inputClass}
+                  >
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                  </select>
                 </div>
               </div>
 
@@ -259,7 +270,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                   name="concepts"
                   value={formData.concepts}
                   onChange={handleFormChange}
-                  className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                  className={inputClass}
                 />
               </div>
 
@@ -270,7 +281,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                   value={formData.description}
                   onChange={handleFormChange}
                   rows={5}
-                  className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30 resize-none"
+                  className={`${inputClass} resize-none`}
                 />
               </div>
 
@@ -281,7 +292,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                   name="solutionLink"
                   value={formData.solutionLink}
                   onChange={handleFormChange}
-                  className="bg-black/60 border border-white/10 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:border-white/30"
+                  className={inputClass}
                 />
               </div>
             </div>
