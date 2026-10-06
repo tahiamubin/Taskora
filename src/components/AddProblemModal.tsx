@@ -21,7 +21,7 @@ export default function AddProblemModal() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries()) as ProblemFormData;
 
-    console.log("Problem data:", data);
+    //console.log("Problem data:", data);
     await createProblemLog(data);
   };
 

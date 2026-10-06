@@ -5,7 +5,7 @@ import React from 'react';
 
 const ProblemLogPage = async() => {
   const problem = await getAllProblem()
-  console.log(problem)
+  //console.log(problem)
   return (
     <div>
        <ProblemList problem={problem}/>
