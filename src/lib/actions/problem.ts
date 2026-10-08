@@ -36,3 +36,11 @@ export const editProblemLog = async (
   if (!res.ok) throw new Error(`Update failed: ${res.status}`);
   return res.json();
 };
+
+export const deleteClass = async (id: string) => {
+  const res = await fetch(`${baseUrl}/problems/${id}`, {
+    method: "DELETE",
+  });
+
+  return res.json();
+};

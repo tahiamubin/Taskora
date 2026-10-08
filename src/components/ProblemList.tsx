@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { editProblemLog } from "../lib/actions/problem";
+import { deleteClass, editProblemLog } from "../lib/actions/problem";
+
 
 interface Problem {
   _id: string;
@@ -44,7 +45,7 @@ const inputClass =
 export const ProblemList: React.FC<ProblemListProps> = ({
   problem,
   onUpdate,
-  onDelete,
+ 
 }) => {
   const router = useRouter();
   const [openDescription, setOpenDescription] = useState<string | null>(null);
@@ -77,6 +78,13 @@ export const ProblemList: React.FC<ProblemListProps> = ({
     } catch (error) {
       console.error("Failed to update problem:", error);
     }
+    router.refresh()
+  };
+
+  const handleDelete = async (id: string) => {
+    //console.log(id)
+    await deleteClass(id);
+    router.refresh()
   };
 
   return (
@@ -143,7 +151,8 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                 Edit
               </button>
               <button
-                onClick={() => onDelete?.(item._id)}
+       
+                onClick={() => handleDelete(item._id)}
                 className="px-3 py-1 text-xs rounded-md bg-black/60 border border-red-500/20 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
               >
                 Delete
@@ -152,6 +161,8 @@ export const ProblemList: React.FC<ProblemListProps> = ({
           </div>
         ))}
       </div>
+
+      
 
       {/* Description Modal */}
       {activeProblem && (

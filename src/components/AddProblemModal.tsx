@@ -3,6 +3,8 @@
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal } from "@heroui/react";
 import { createProblemLog } from "../lib/actions/problem";
+import { useRouter } from "next/navigation";
+
 
 type ProblemFormData = {
   platform: string;
@@ -15,6 +17,7 @@ type ProblemFormData = {
 };
 
 export default function AddProblemModal() {
+  const router = useRouter()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -23,6 +26,8 @@ export default function AddProblemModal() {
 
     //console.log("Problem data:", data);
     await createProblemLog(data);
+    router.refresh()
+ 
   };
 
   return (
