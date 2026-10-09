@@ -4,7 +4,7 @@ import type { Help } from '@/src/lib/types/help';
 
 const HelpPage = async () => {
   const help: Help[] = await getHelp();
-  //console.log(help);
+  console.log(help);
 
   return (
     <div className="min-h-screen bg-[#070707] p-6">
