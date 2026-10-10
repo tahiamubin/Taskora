@@ -68,7 +68,7 @@ const HelpComments: React.FC<HelpCommentsProps> = ({ helpId }) => {
     if (!confirm("Are you sure you want to delete this comment?")) return;
     // TODO: DELETE /comments/:id
     setComments((prev) =>
-      prev.filter((c) => c._id !== id && c.parentId !== id)
+      prev.filter((c) => c._id !== id && c.parentId !== id),
     );
   };
 

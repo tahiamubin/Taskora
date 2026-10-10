@@ -5,6 +5,7 @@ type AskForHelpFormData = {
   bug: string;
   tried: string;
   expected: string;
+  userId: string;
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -18,5 +19,5 @@ export const createHelp = async (data: AskForHelpFormData) => {
     body: JSON.stringify(data),
   });
 
-  return res.json()
+  return res.json();
 };

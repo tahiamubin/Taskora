@@ -2,22 +2,39 @@
 import { Label } from "@heroui/react";
 import React from "react";
 import { createHelp } from "../lib/actions/help";
+import { authClient } from "../lib/auth-client";
+import { success } from "better-auth";
+import { toast } from "react-toastify";
 
 const AskForHelp = () => {
+  const { data: session } = authClient.useSession();
+  //console.log(session);
   type AskForHelpFormData = {
     title: string;
     questionLink: string;
     bug: string;
     tried: string;
     expected: string;
+    userId: string;
   };
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries()) as AskForHelpFormData;
-    //console.log(data);
-    await createHelp(data)
+    
+    if (!session?.user.id) {
+      return;
+    }
 
+    //console.log(data);
+    const helpData = {
+      ...data,
+      userId: session?.user.id,
+    };
+
+    await createHelp(helpData);
+    toast.success("Help post submitted")
   };
 
   return (

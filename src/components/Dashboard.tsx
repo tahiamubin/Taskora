@@ -48,6 +48,7 @@ const studentNavLinks: NavLink[] = [
   { icon: FiAward, label: "Contest Points", href: "/dashboard/student/contests" },
   { icon: FiBarChart2, label: "Leaderboard", href: "/dashboard/student/leaderboard" },
   { icon: FiHelpCircle, label: "Ask for Help", href: "/dashboard/student/help" },
+  { icon: FiHelpCircle, label: "Shared Help", href: "/dashboard/student/shared-help" },
 ];
 
 
