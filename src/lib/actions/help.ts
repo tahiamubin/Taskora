@@ -21,3 +21,10 @@ export const createHelp = async (data: AskForHelpFormData) => {
 
   return res.json();
 };
+
+export const deleteSharedHelp = async (id: string) => {
+  const res = await fetch(`${baseUrl}/shared-help/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+};

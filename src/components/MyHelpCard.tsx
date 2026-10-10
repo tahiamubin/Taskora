@@ -3,6 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import type { Help } from "@/src/lib/types/help";
+import { deleteSharedHelp } from "../lib/actions/help";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface HelpWithUser extends Help {
   userId: string;
@@ -13,14 +16,16 @@ interface MyHelpCardProps {
 }
 
 const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
+  const router = useRouter()
   const handleEdit = () => {
     console.log("Edit", help._id);
   };
 
-  const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this entry?")) {
-      console.log("Delete", help._id);
-    }
+  const handleDelete = async (id: string) => {
+    console.log(id);
+    await deleteSharedHelp(id);
+    toast.success("Help request deleted successfully!");
+    router.refresh()
   };
 
   return (
@@ -107,7 +112,7 @@ const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
             edit
           </button>
           <button
-            onClick={handleDelete}
+            onClick={() => handleDelete(help._id)}
             className="rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-xs text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-500/15 hover:text-red-300"
           >
             delete
