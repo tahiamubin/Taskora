@@ -28,3 +28,17 @@ export const deleteSharedHelp = async (id: string) => {
   });
   return res.json();
 };
+
+export const updateSharedHelp = async (
+  id: string,
+  data: Partial<AskForHelpFormData>,
+  
+) => {
+  const res = await fetch(`${baseUrl}/shared-help/${id}`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`Update failed: ${res.status}`);
+  return res.json();
+};

@@ -6,6 +6,7 @@ import type { Help } from "@/src/lib/types/help";
 import { deleteSharedHelp } from "../lib/actions/help";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import EditHelpModal from "./EditHelpModal";
 
 interface HelpWithUser extends Help {
   userId: string;
@@ -16,7 +17,7 @@ interface MyHelpCardProps {
 }
 
 const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
-  const router = useRouter()
+  const router = useRouter();
   const handleEdit = () => {
     console.log("Edit", help._id);
   };
@@ -25,7 +26,7 @@ const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
     console.log(id);
     await deleteSharedHelp(id);
     toast.success("Help request deleted successfully!");
-    router.refresh()
+    router.refresh();
   };
 
   return (
@@ -105,12 +106,13 @@ const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
         </Link>
 
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={handleEdit}
             className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-xs text-white/70 transition-colors hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-300"
           >
             edit
-          </button>
+          </button> */}
+          <EditHelpModal help ={help}></EditHelpModal>
           <button
             onClick={() => handleDelete(help._id)}
             className="rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 font-mono text-xs text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-500/15 hover:text-red-300"
