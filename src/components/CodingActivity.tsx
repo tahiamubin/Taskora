@@ -1,17 +1,14 @@
-import type { ReactNode } from "react";
-import { Tabs } from "@heroui/react";
+"use client";
+import { useState } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { Code2, Trophy, Plus } from "lucide-react";
 
-const tabClass =
-  "relative flex h-auto flex-1 flex-col items-center justify-center gap-2 rounded-none px-4 py-4 " +
-  "text-sm font-semibold text-white/60 outline-none transition-colors " +
-  "hover:bg-white/[0.14] hover:text-white " +
-  "data-[selected=true]:bg-white/[0.1] data-[selected=true]:text-white " +
-  "focus-visible:ring-2 focus-visible:ring-blue-500/60";
+type TabId = "problems" | "contests";
 
-const indicatorClass =
-  "absolute inset-x-0 bottom-0 top-auto h-0.5 rounded-none bg-blue-500 " +
-  "shadow-[0_0_12px_2px] shadow-blue-600/20";
+const TABS: { id: TabId; label: string; icon: typeof Code2 }[] = [
+  { id: "problems", label: "Problems", icon: Code2 },
+  { id: "contests", label: "Contests", icon: Trophy },
+];
 
 interface CodingActivityProps {
   problemsContent?: ReactNode;
@@ -24,79 +21,128 @@ export function CodingActivity({
   contestsContent,
   onAddProblem,
 }: CodingActivityProps) {
+  const [active, setActive] = useState<TabId>("problems");
+
+  // Left/Right arrow keys move between tabs
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const next =
+      (index + (e.key === "ArrowRight" ? 1 : -1) + TABS.length) % TABS.length;
+    setActive(TABS[next].id);
+    document.getElementById(`tab-${TABS[next].id}`)?.focus();
+  };
+
   return (
-    <section className="min-h-screen  text-white">
-      <div className="mx-auto w-full p-10 max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-[#111111]">
-        {/* Header */}
-        <header className="px-5 pb-4 pt-5">
-          <h2 className="text-lg font-semibold text-white">
-            My Coding Activity
-          </h2>
-          <p className="mt-3 text-sm text-white/60">
-            Track your practice and contest progress.
-          </p>
-        </header>
+    <section className="text-white">
+      <div className="mx-auto  max-w-7xl overflow-hidden rounded-2xl">
+        {/* Tab list */}
 
-        <Tabs className="w-full" defaultSelectedKey="problems">
-          <Tabs.ListContainer className="px-5">
-            <Tabs.List
-              aria-label="Coding activity"
-              className="flex w-full overflow-hidden rounded-none border-b border-white/10 bg-transparent p-0"
-            >
-              <Tabs.Tab id="problems" className={tabClass}>
-                <Code2 className="h-4 w-4" aria-hidden="true" />
-                Problems
-                <Tabs.Indicator className={indicatorClass} />
-              </Tabs.Tab>
+        <div
+          role="tablist"
+          aria-label="Coding activity"
+          className="flex w-full border-b border-white/10"
+        >
+          {TABS.map(({ id, label, icon: Icon }, index) => {
+            const selected = active === id;
+            return (
+              <button
+                key={id}
+                id={`tab-${id}`}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-controls={`panel-${id}`}
+                tabIndex={selected ? 0 : -1}
+                onClick={() => setActive(id)}
+                onKeyDown={(e) => onKeyDown(e, index)}
+                className={[
+                  "relative flex flex-1 flex-col items-center justify-center gap-2 px-4 py-4",
+                  "text-sm font-semibold transition-colors outline-none",
+                  "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500/60",
+                  selected
+                    ? "bg-white/[0.1] text-white"
+                    : "bg-transparent text-white/60 hover:bg-white/[0.14] hover:text-white",
+                ].join(" ")}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {label}
+                {/* active underline */}
+                <span
+                  aria-hidden="true"
+                  className={[
+                    "pointer-events-none absolute inset-x-0 bottom-0 h-0.5 bg-blue-500",
+                    "shadow-[0_0_12px_2px] shadow-blue-600/20 transition-opacity",
+                    selected ? "opacity-100" : "opacity-0",
+                  ].join(" ")}
+                />
+              </button>
+            );
+          })}
+        </div>
 
-              <Tabs.Tab id="contests" className={tabClass}>
-                <Tabs.Separator className="bg-white/10" />
-                <Trophy className="h-4 w-4" aria-hidden="true" />
-                Contests
-                <Tabs.Indicator className={indicatorClass} />
-              </Tabs.Tab>
-            </Tabs.List>
-          </Tabs.ListContainer>
+        {/* Problems */}
+        {active === "problems" && (
+          <div
+            role="tabpanel"
+            id="panel-problems"
+            aria-labelledby="tab-problems"
+            className="px-5 pb-6 pt-5 sm:px-6"
+          >
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4 sm:p-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-base font-semibold text-white">
+                    My Problems
+                  </h3>
+                  <p className="mt-1 text-sm text-white/40">
+                    Manage your coding practice and progress.
+                  </p>
+                </div>
 
-          {/* Problems */}
-          <Tabs.Panel id="problems" className="px-5 pb-5 pt-4">
-            <div className="rounded-xl border border-white/10 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-base font-semibold text-white">
-                  My Problems
-                </h3>
                 <button
                   type="button"
                   onClick={onAddProblem}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white
-                             shadow-[0_0_20px] shadow-blue-600/20 transition-colors hover:bg-blue-400
-                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-blue-500/30 bg-white/[0.08] px-5 text-sm font-medium text-white transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
                 >
-                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  <Plus className="h-4 w-4 text-blue-400" aria-hidden="true" />
                   Add Problem
                 </button>
               </div>
 
-              <div className="mt-4 text-sm text-white/60">
+              <div className="mt-5 text-sm text-white/60">
                 {problemsContent ?? (
                   <p>Your existing problem table appears here.</p>
                 )}
               </div>
             </div>
-          </Tabs.Panel>
+          </div>
+        )}
 
-          {/* Contests */}
-          <Tabs.Panel id="contests" className="px-5 pb-5 pt-4">
-            <div className="rounded-xl border border-white/10 p-4">
-              <h3 className="text-base font-semibold text-white">
-                My Contests
-              </h3>
-              <div className="mt-4 text-sm text-white/60">
+        {/* Contests */}
+        {active === "contests" && (
+          <div
+            role="tabpanel"
+            id="panel-contests"
+            aria-labelledby="tab-contests"
+            className="px-5 pb-6 pt-5 sm:px-6"
+          >
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4 sm:p-5">
+              <div>
+                <h3 className="text-base font-semibold text-white">
+                  My Contests
+                </h3>
+                <p className="mt-1 text-sm text-white/40">
+                  Track your contest participation and performance.
+                </p>
+              </div>
+
+              <div className="mt-5 text-sm text-white/60">
                 {contestsContent ?? <p>Your contest history appears here.</p>}
               </div>
             </div>
-          </Tabs.Panel>
-        </Tabs>
+          </div>
+        )}
       </div>
     </section>
   );
