@@ -52,7 +52,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full px-4 pt-4 ">
-      <nav className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] border border-white/10 bg-[#111111]/85 shadow-[0_20px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+      <nav className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] backdrop-blur-xl">
         {/* Glows */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-full bg-gradient-to-b from-slate-400/10 to-transparent" />
         <div className="pointer-events-none absolute -left-16 top-0 h-24 w-40 rounded-full bg-blue-600/20 blur-3xl" />

@@ -43,7 +43,7 @@ type SessionUser = NonNullable<SessionData>["user"] & { role?: string };
 // Student navigation links
 const studentNavLinks: NavLink[] = [
   { icon: FiGrid, label: "Overview", href: "/dashboard/student" },
-  { icon: FiCode, label: "Problem Log", href: "/dashboard/student/problems" },
+  { icon: FiCode, label: "Code Zone", href: "/dashboard/student/code-zone" },
   { icon: FiBookOpen, label: "Interview Prep", href: "/dashboard/student/interview-prep" },
   { icon: FiAward, label: "Contest Points", href: "/dashboard/student/contests" },
   { icon: FiBarChart2, label: "Leaderboard", href: "/dashboard/student/leaderboard" },
