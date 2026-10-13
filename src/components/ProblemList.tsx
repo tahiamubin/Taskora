@@ -88,7 +88,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
   };
 
   return (
-    <div className="w-full bg-[#070707] p-4">
+    <div className="w-full  p-4">
       {/* Header */}
       <div className="grid grid-cols-[2fr_1.2fr_1fr_0.8fr_1.5fr_1fr_1fr_1.5fr] gap-4 px-4 py-3 text-sm font-semibold text-gray-400 border-b border-white/10">
         <span>Name</span>

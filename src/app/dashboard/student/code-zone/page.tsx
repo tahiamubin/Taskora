@@ -1,23 +1,19 @@
+import AddProblemModal from "@/src/components/AddProblemModal";
 import { CodingActivity } from "@/src/components/CodingActivity";
+import { getAllProblem } from "@/src/lib/api/problem";
 
-import React from "react";
+import { ProblemList } from "@/src/components/ProblemList";
+
 
 const ProblemLogPage = async () => {
-  //const problem = await getAllProblem()
-  //console.log(problem)
+  const problems = (await getAllProblem()) ;
+
   return (
     <div>
-      {/* <ProblemList problem={problem}/> */}
-      {/* <AddProblemModal /> */}
-      {/* <header className="px-5 pb-5 pt-6 sm:px-6">
-        <h2 className="text-xl font-semibold tracking-tight text-white">
-          My Coding Activity
-        </h2>
-        <p className="mt-2 text-sm text-white/50">
-          Track your practice and contest progress.
-        </p>
-      </header> */}
-      <CodingActivity></CodingActivity>
+      <CodingActivity
+        length={problems.length}
+        problemsContent={<ProblemList problem={problems} />}
+      />
     </div>
   );
 };

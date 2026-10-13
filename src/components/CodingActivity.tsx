@@ -1,7 +1,9 @@
 "use client";
+
 import { useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
-import { Code2, Trophy, Plus } from "lucide-react";
+import { Code2, Trophy } from "lucide-react";
+import AddProblemModal from "./AddProblemModal";
 
 type TabId = "problems" | "contests";
 
@@ -11,17 +13,19 @@ const TABS: { id: TabId; label: string; icon: typeof Code2 }[] = [
 ];
 
 interface CodingActivityProps {
+  /** Number of problems stored in the database. */
+  length?: number;
   problemsContent?: ReactNode;
   contestsContent?: ReactNode;
-  onAddProblem?: () => void;
 }
 
 export function CodingActivity({
+  length = 0,
   problemsContent,
   contestsContent,
-  onAddProblem,
 }: CodingActivityProps) {
   const [active, setActive] = useState<TabId>("problems");
+  const hasProblems = length > 0;
 
   // Left/Right arrow keys move between tabs
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -35,9 +39,8 @@ export function CodingActivity({
 
   return (
     <section className="text-white">
-      <div className="mx-auto  max-w-7xl overflow-hidden rounded-2xl">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl">
         {/* Tab list */}
-
         <div
           role="tablist"
           aria-label="Coding activity"
@@ -100,22 +103,21 @@ export function CodingActivity({
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={onAddProblem}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-blue-500/30 bg-white/[0.08] px-5 text-sm font-medium text-white transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
-                >
-                  <Plus className="h-4 w-4 text-blue-400" aria-hidden="true" />
-                  Add Problem
-                </button>
+                {/* Empty state: button in the header */}
+                {!hasProblems && <AddProblemModal />}
               </div>
 
               <div className="mt-5 text-sm text-white/60">
-                {problemsContent ?? (
+                {hasProblems ? (
+                  problemsContent
+                ) : (
                   <p>Your existing problem table appears here.</p>
                 )}
               </div>
             </div>
+
+            {/* Has data: floating button at the bottom right */}
+            {hasProblems && <AddProblemModal floating />}
           </div>
         )}
 
