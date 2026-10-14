@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { Code2, Trophy } from "lucide-react";
 import AddProblemModal from "./AddProblemModal";
+import AddContestModal from "./AddContestModal";
 
 type TabId = "problems" | "contests";
 
@@ -117,7 +118,7 @@ export function CodingActivity({
             </div>
 
             {/* Has data: floating button at the bottom right */}
-            {hasProblems && <AddProblemModal floating />}
+            {hasProblems && <AddProblemModal />}
           </div>
         )}
 
@@ -143,6 +144,8 @@ export function CodingActivity({
                 {contestsContent ?? <p>Your contest history appears here.</p>}
               </div>
             </div>
+
+            <AddContestModal />
           </div>
         )}
       </div>

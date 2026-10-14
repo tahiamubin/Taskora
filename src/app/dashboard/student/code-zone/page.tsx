@@ -1,12 +1,10 @@
-import AddProblemModal from "@/src/components/AddProblemModal";
 import { CodingActivity } from "@/src/components/CodingActivity";
 import { getAllProblem } from "@/src/lib/api/problem";
 
 import { ProblemList } from "@/src/components/ProblemList";
 
-
 const ProblemLogPage = async () => {
-  const problems = (await getAllProblem()) ;
+  const problems = await getAllProblem();
 
   return (
     <div>

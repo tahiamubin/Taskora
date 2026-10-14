@@ -6,6 +6,8 @@ import { Button, Label, Modal, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { createProblemLog } from "../lib/actions/problem";
 import { Problem } from "../lib/types/problem";
+
+
 export default function AddProblemModal() {
   const router = useRouter();
   const state = useOverlayState();
@@ -38,8 +40,6 @@ export default function AddProblemModal() {
       setIsSubmitting(false);
     }
   };
-
- 
 
   return (
     <>
