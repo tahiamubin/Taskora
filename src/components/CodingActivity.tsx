@@ -16,17 +16,20 @@ const TABS: { id: TabId; label: string; icon: typeof Code2 }[] = [
 interface CodingActivityProps {
   /** Number of problems stored in the database. */
   length?: number;
+  contestLength?: number;
   problemsContent?: ReactNode;
   contestsContent?: ReactNode;
 }
 
 export function CodingActivity({
   length = 0,
+  contestLength = 0,
   problemsContent,
   contestsContent,
 }: CodingActivityProps) {
   const [active, setActive] = useState<TabId>("problems");
-  const hasProblems = length > 0;
+  const hasProblems = length >= 0;
+  const hasContest = contestLength >= 0;
 
   // Left/Right arrow keys move between tabs
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -126,26 +129,36 @@ export function CodingActivity({
         {active === "contests" && (
           <div
             role="tabpanel"
-            id="panel-contests"
-            aria-labelledby="tab-contests"
+            id="panel-problems"
+            aria-labelledby="tab-problems"
             className="px-5 pb-6 pt-5 sm:px-6"
           >
             <div className="rounded-xl border border-white/10 bg-black/20 p-4 sm:p-5">
-              <div>
-                <h3 className="text-base font-semibold text-white">
-                  My Contests
-                </h3>
-                <p className="mt-1 text-sm text-white/40">
-                  Track your contest participation and performance.
-                </p>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-base font-semibold text-white">
+                    My Contest
+                  </h3>
+                  <p className="mt-1 text-sm text-white/40">
+                    Manage your coding practice and progress.
+                  </p>
+                </div>
+
+                {/* Empty state: button in the header */}
+                {!hasContest && <AddContestModal />}
               </div>
 
               <div className="mt-5 text-sm text-white/60">
-                {contestsContent ?? <p>Your contest history appears here.</p>}
+                {hasContest ? (
+                  contestsContent
+                ) : (
+                  <p>Your existing problem table appears here.</p>
+                )}
               </div>
             </div>
 
-            <AddContestModal />
+            {/* Has data: floating button at the bottom right */}
+            {hasContest && <AddContestModal />}
           </div>
         )}
       </div>

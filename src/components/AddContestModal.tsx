@@ -4,8 +4,9 @@ import { useState, type FormEvent } from "react";
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { createProblemLog } from "../lib/actions/problem";
-import { Problem } from "../lib/types/problem";
+
+import { ContestFormData } from "../lib/types/contest";
+import { createContest } from "../lib/actions/contest";
 
 export default function AddContestModal() {
   const router = useRouter();
@@ -19,13 +20,16 @@ export default function AddContestModal() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()) as unknown as Problem;
+    const data = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as ContestFormData;
+    //console.log(data);
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createProblemLog(data);
+      await createContest(data);
       form.reset();
       state.close();
       router.refresh();
