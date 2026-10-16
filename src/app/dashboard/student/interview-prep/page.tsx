@@ -1,11 +1,10 @@
-import React from 'react';
+import InterviewTask from "@/src/components/InterviewTask";
 
-const page = () => {
-    return (
-        <div>
-            <h1>hiii</h1>
-        </div>
-    );
+
+export const metadata = {
+  title: "Interview Prep | Code Trail",
 };
 
-export default page;
+export default function InterviewPrepPage() {
+  return <InterviewTask />;
+}
