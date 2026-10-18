@@ -1,39 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import { Plus } from "@gravity-ui/icons";
-import { Button, useOverlayState } from "@heroui/react";
-import { PlanFormValues, PrepPlan } from "@/src/lib/types/Prep";
-import { usePrepPlans } from "@/src/components/Useprepplans";
-import PrepPlanCard from "@/src/components/Prepplancard";
-import PrepPlanModal from "@/src/components/Prepplanmodal";
-// import PrepPlanCard from "../components/PrepPlanCard";
-// import PrepPlanModal from "../components/PrepPlanModal";
-// import { usePrepPlans } from "../lib/hooks/usePrepPlans";
-// import type { PlanFormValues, PrepPlan } from "../lib/types/prep";
+import { Button } from "@heroui/react";
+
+import AddPrepPlanModal from "@/src/components/Prepplanmodal";
 
 export default function InterviewPrepPage() {
-  const { plans, isLoaded, actions } = usePrepPlans();
-  const modal = useOverlayState();
-  const [editingPlan, setEditingPlan] = useState<PrepPlan | undefined>();
-
-  const openCreate = () => {
-    setEditingPlan(undefined);
-    modal.open();
-  };
-
-  const openEdit = (plan: PrepPlan) => {
-    setEditingPlan(plan);
-    modal.open();
-  };
-
-  const handleSubmit = (values: PlanFormValues) => {
-    if (editingPlan) actions.updatePlan(editingPlan.id, values);
-    else actions.addPlan(values);
-  };
-
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-[#070707] px-4 py-24 sm:px-8">
+    <main className="relative min-h-screen w-full overflow-hidden px-4 py-24 sm:px-8">
       <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-blue-600/15 blur-3xl" />
 
       <div className="relative mx-auto max-w-4xl">
@@ -52,11 +24,11 @@ export default function InterviewPrepPage() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-white/60 sm:text-lg">
-            Create a plan for each interview, break it into topics and tick
-            them off as you go.
+            Create a plan for each interview, break it into topics and tick them
+            off as you go.
           </p>
         </header>
-
+        {/* 
         {isLoaded &&
           (plans.length === 0 ? (
             <div className="rounded-[2rem] border border-dashed border-white/10 bg-[#111111] px-8 py-16 text-center">
@@ -81,24 +53,17 @@ export default function InterviewPrepPage() {
                 />
               ))}
             </div>
-          ))}
+          ))} */}
       </div>
 
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onPress={openCreate}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-blue-500/30 bg-white/[0.08] px-5 text-sm font-medium text-white transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
-        >
+      {/* <div className="fixed bottom-6 right-6 z-50">
+        <Button className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-blue-500/30 bg-white/[0.08] px-5 text-sm font-medium text-white transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60">
           <Plus className="h-4 w-4 text-blue-400" aria-hidden="true" />
           Add Plan
         </Button>
-      </div>
+      </div> */}
 
-      <PrepPlanModal
-        state={modal}
-        plan={editingPlan}
-        onSubmit={handleSubmit}
-      />
+      <AddPrepPlanModal />
     </main>
   );
 }

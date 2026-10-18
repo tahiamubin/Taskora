@@ -1,137 +1,158 @@
 "use client";
 
-import type { FormEvent } from "react";
-import { Pencil, Plus } from "@gravity-ui/icons";
+import { useState, type FormEvent } from "react";
+import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal, useOverlayState } from "@heroui/react";
-import { PlanFormValues, PrepPlan } from "../lib/types/Prep";
+import { useRouter } from "next/navigation";
 
+import { PlanFormValues } from "../lib/types/Prep";
 
-type OverlayState = ReturnType<typeof useOverlayState>;
+export default function AddPrepPlanModal() {
+  const router = useRouter();
+  const state = useOverlayState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-interface PrepPlanModalProps {
-  state: OverlayState;
-  /** When provided, the modal edits this plan instead of creating a new one. */
-  plan?: PrepPlan;
-  onSubmit: (values: PlanFormValues) => void;
-}
-
-const inputClass =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30";
-
-export default function PrepPlanModal({
-  state,
-  plan,
-  onSubmit,
-}: PrepPlanModalProps) {
-  const isEditing = Boolean(plan);
-  const Icon = isEditing ? Pencil : Plus;
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    if (isSubmitting) return;
 
-    onSubmit({
-      title: String(formData.get("title")).trim(),
-      company: String(formData.get("company")).trim(),
-      targetDate: String(formData.get("targetDate")),
-    });
-    state.close();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as PlanFormValues;
+    console.log(data)
+
+    setIsSubmitting(true);
+    setError(null);
+
+    // try {
+    //   await createPrepPlan(data);
+    //   form.reset();
+    //   state.close();
+    //   router.refresh();
+    // } catch (err) {
+    //   setError(
+    //     err instanceof Error
+    //       ? err.message
+    //       : "Something went wrong. Please try again.",
+    //   );
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   };
 
   return (
-    <Modal>
-      <Modal.Backdrop
-        isOpen={state.isOpen}
-        onOpenChange={state.setOpen}
-        className="bg-black/70 backdrop-blur-sm"
-      >
-        <Modal.Container placement="auto">
-          <Modal.Dialog className="relative w-full max-w-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-[#2b2e35] via-[#17181b] to-[#101010] text-white shadow-2xl">
-            <Modal.CloseTrigger />
+    <>
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button
+          onPress={state.open}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-blue-500/30 bg-white/[0.08] px-5 text-sm font-medium text-white transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
+        >
+          <Plus className="h-4 w-4 text-blue-400" aria-hidden="true" />
+          Create Plan
+        </Button>
+      </div>
 
-            <Modal.Header className="px-6 pb-4 pt-8 sm:px-8">
-              <Modal.Icon className="bg-white/10 text-white">
-                <Icon className="size-5" />
-              </Modal.Icon>
+      <Modal>
+        <Modal.Backdrop
+          isOpen={state.isOpen}
+          onOpenChange={(open) => {
+            state.setOpen(open);
+            if (!open) setError(null);
+          }}
+          className="bg-black/70 backdrop-blur-sm"
+        >
+          <Modal.Container placement="auto">
+            <Modal.Dialog className="relative w-full max-w-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-b from-[#2b2e35] via-[#17181b] to-[#101010] text-white shadow-2xl">
+              <Modal.CloseTrigger />
 
-              <Modal.Heading className="text-xl font-semibold text-white">
-                {isEditing ? "Edit Prep Plan" : "Create a Prep Plan"}
-              </Modal.Heading>
+              <Modal.Header className="px-6 pb-4 pt-8 sm:px-8">
+                <Modal.Icon className="bg-white/10 text-white">
+                  <Plus className="size-5" />
+                </Modal.Icon>
 
-              <p className="mt-1.5 text-sm leading-5 text-gray-400">
-                {isEditing
-                  ? "Update the details of this interview plan."
-                  : "Set a target date, then break your prep into topics."}
-              </p>
-            </Modal.Header>
+                <Modal.Heading className="text-xl font-semibold text-white">
+                  Create a Prep Plan
+                </Modal.Heading>
 
-            <Modal.Body className="max-h-[65vh] overflow-y-auto px-6 py-4 sm:px-8">
-              <form
-                key={plan?.id ?? "new"}
-                id="prep-plan-form"
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-5"
-              >
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="title" className="text-gray-200">
-                    Plan Title
-                  </Label>
-                  <input
-                    id="title"
-                    name="title"
-                    required
-                    defaultValue={plan?.title}
-                    placeholder="e.g. Frontend Engineer Interview"
-                    className={inputClass}
-                  />
-                </div>
+                <p className="mt-1.5 text-sm leading-5 text-gray-400">
+                  Set a target date, then break your prep into topics.
+                </p>
+              </Modal.Header>
 
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="company" className="text-gray-200">
-                    Company
-                  </Label>
-                  <input
-                    id="company"
-                    name="company"
-                    required
-                    defaultValue={plan?.company}
-                    placeholder="e.g. Google"
-                    className={inputClass}
-                  />
-                </div>
+              <Modal.Body className="max-h-[65vh] overflow-y-auto px-6 py-4 sm:px-8">
+                <form
+                  id="add-prep-plan-form"
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-5"
+                >
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="title" className="text-gray-200">
+                      Plan Title
+                    </Label>
+                    <input
+                      id="title"
+                      name="title"
+                      required
+                      placeholder="e.g. Frontend Engineer Interview"
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
+                    />
+                  </div>
 
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="targetDate" className="text-gray-200">
-                    Target Date
-                  </Label>
-                  <input
-                    id="targetDate"
-                    name="targetDate"
-                    type="date"
-                    required
-                    defaultValue={plan?.targetDate}
-                    className={`${inputClass} [color-scheme:dark]`}
-                  />
-                </div>
-              </form>
-            </Modal.Body>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="company" className="text-gray-200">
+                      Company
+                    </Label>
+                    <input
+                      id="company"
+                      name="company"
+                      required
+                      placeholder="e.g. Google"
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
+                    />
+                  </div>
 
-            <Modal.Footer className="border-t border-white/10 px-6 py-5 sm:px-8">
-              <Button slot="close" variant="secondary">
-                Cancel
-              </Button>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="targetDate" className="text-gray-200">
+                      Target Date
+                    </Label>
+                    <input
+                      id="targetDate"
+                      name="targetDate"
+                      type="date"
+                      required
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30 [color-scheme:dark]"
+                    />
+                  </div>
 
-              <Button
-                type="submit"
-                form="prep-plan-form"
-                className="bg-white font-medium text-black hover:bg-gray-200"
-              >
-                {isEditing ? "Save Changes" : "Create Plan"}
-              </Button>
-            </Modal.Footer>
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
-    </Modal>
+                  {error && (
+                    <p role="alert" className="text-sm text-red-400">
+                      {error}
+                    </p>
+                  )}
+                </form>
+              </Modal.Body>
+
+              <Modal.Footer className="border-t border-white/10 px-6 py-5 sm:px-8">
+                <Button slot="close" variant="secondary">
+                  Cancel
+                </Button>
+
+                <Button
+                  type="submit"
+                  form="add-prep-plan-form"
+                  isPending={isSubmitting}
+                  className="bg-white font-medium text-black hover:bg-gray-200"
+                >
+                  Create Plan
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
+    </>
   );
 }
