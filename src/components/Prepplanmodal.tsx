@@ -1,46 +1,39 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { Plus } from "@gravity-ui/icons";
 import { Button, Label, Modal, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
-import { PlanFormValues } from "../lib/types/Prep";
+import { createInterviewPrep } from "../lib/actions/interview-prep";
+import { PlanFormValues } from "../lib/types/interview-prep";
+import { FormEvent } from "react";
+import { authClient } from "../lib/auth-client";
+
 
 export default function AddPrepPlanModal() {
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const state = useOverlayState();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isSubmitting) return;
 
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(
       formData.entries(),
     ) as unknown as PlanFormValues;
-    console.log(data)
+    //console.log(data);
+    const helpData = {
+      ...data,
+      userId: session?.user.id,
+    };
 
-    setIsSubmitting(true);
-    setError(null);
 
-    // try {
-    //   await createPrepPlan(data);
-    //   form.reset();
-    //   state.close();
-    //   router.refresh();
-    // } catch (err) {
-    //   setError(
-    //     err instanceof Error
-    //       ? err.message
-    //       : "Something went wrong. Please try again.",
-    //   );
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+    await createInterviewPrep(helpData);
+    form.reset();
+    state.close();
+    router.refresh();
   };
 
   return (
@@ -60,7 +53,6 @@ export default function AddPrepPlanModal() {
           isOpen={state.isOpen}
           onOpenChange={(open) => {
             state.setOpen(open);
-            if (!open) setError(null);
           }}
           className="bg-black/70 backdrop-blur-sm"
         >
@@ -126,12 +118,6 @@ export default function AddPrepPlanModal() {
                       className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30 [color-scheme:dark]"
                     />
                   </div>
-
-                  {error && (
-                    <p role="alert" className="text-sm text-red-400">
-                      {error}
-                    </p>
-                  )}
                 </form>
               </Modal.Body>
 
@@ -143,7 +129,6 @@ export default function AddPrepPlanModal() {
                 <Button
                   type="submit"
                   form="add-prep-plan-form"
-                  isPending={isSubmitting}
                   className="bg-white font-medium text-black hover:bg-gray-200"
                 >
                   Create Plan
@@ -153,6 +138,8 @@ export default function AddPrepPlanModal() {
           </Modal.Container>
         </Modal.Backdrop>
       </Modal>
+
+    
     </>
   );
 }

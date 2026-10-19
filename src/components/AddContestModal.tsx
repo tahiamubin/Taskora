@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { ContestFormData } from "../lib/types/contest";
 import { createContest } from "../lib/actions/contest";
+import { authClient } from "../lib/auth-client";
 
 export default function AddContestModal() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function AddContestModal() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const { data: session } = authClient.useSession();
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -24,12 +26,16 @@ export default function AddContestModal() {
       formData.entries(),
     ) as unknown as ContestFormData;
     //console.log(data);
+    const helpData = {
+      ...data,
+      userId: session?.user.id,
+    };
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createContest(data);
+      await createContest(helpData);
       form.reset();
       state.close();
       router.refresh();

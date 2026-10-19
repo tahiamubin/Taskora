@@ -6,9 +6,10 @@ import { Button, Label, Modal, useOverlayState } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { createProblemLog } from "../lib/actions/problem";
 import { Problem } from "../lib/types/problem";
-
+import { authClient } from "../lib/auth-client";
 
 export default function AddProblemModal() {
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const state = useOverlayState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,12 +22,16 @@ export default function AddProblemModal() {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries()) as unknown as Problem;
+    const helpData = {
+      ...data,
+      userId: session?.user.id,
+    };
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createProblemLog(data);
+      await createProblemLog(helpData);
       form.reset();
       state.close();
       router.refresh();

@@ -1,56 +1,78 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { Button } from "@heroui/react";
-import {
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  Pencil,
-  TrashBin,
-} from "@gravity-ui/icons";
-import { PrepPlan } from "../lib/types/Prep";
-import { PrepActions } from "./Useprepplans";
-import { formatDate, formatDaysLeft, getDaysLeft, getProgress } from "../lib/utils/Prep";
+import { useState, useTransition, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Button, useOverlayState } from "@heroui/react";
+import { Calendar, Pencil, TrashBin } from "@gravity-ui/icons";
+
+import { formatDate, formatDaysLeft, getDaysLeft } from "../lib/utils/Prep";
+
 import IconButton from "./Iconbutton";
-import PrepTopicItem from "./Preptopicitem";
+
+import { PrepPlan, Topic } from "../lib/types/interview-prep";
+import {
+  createInterviewTopic,
+  deleteInterview,
+} from "../lib/actions/interview-prep";
+import { authClient } from "../lib/auth-client";
 
 interface PrepPlanCardProps {
   plan: PrepPlan;
-  isFirst: boolean;
-  isLast: boolean;
-  actions: PrepActions;
-  onEdit: (plan: PrepPlan) => void;
 }
 
-export default function PrepPlanCard({
-  plan,
-  isFirst,
-  isLast,
-  actions,
-  onEdit,
-}: PrepPlanCardProps) {
+export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
+  const router = useRouter();
+  const editState = useOverlayState();
+  const [isPending, startTransition] = useTransition();
   const [newTopic, setNewTopic] = useState("");
-  const { done, total, percent } = getProgress(plan);
+
+  const topics = plan.topics ?? [];
+  const total = topics.length;
+  const done = topics.filter((t) => t.done).length;
+  const percent = total === 0 ? 0 : Math.round((done / total) * 100);
   const daysLeft = getDaysLeft(plan.targetDate);
 
-  const handleAddTopic = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const title = newTopic.trim();
-    if (!title) return;
-
-    actions.addTopic(plan.id, title);
-    setNewTopic("");
+  const run = (task: () => Promise<unknown>) => {
+    startTransition(async () => {
+      try {
+        await task();
+        router.refresh();
+      } catch (err) {
+        window.alert(
+          err instanceof Error ? err.message : "Something went wrong.",
+        );
+      }
+    });
   };
 
-  const handleDelete = () => {
-    if (window.confirm(`Delete "${plan.title}" and all of its topics?`)) {
-      actions.deletePlan(plan.id);
-    }
+  const handleAddTopic = async (e: FormEvent<HTMLFormElement>) => {
+    const { data: session } = authClient.useSession();
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries()) as unknown as Topic;
+    //console.log(data);
+    const topicData = {
+      ...data,
+      userId: session?.user.id,
+    };
+
+    await createInterviewTopic(topicData);
+  };
+
+  const handleDelete = async (id: string) => {
+    //console.log("clicked id: ", id)
+    await deleteInterview(id);
+    router.refresh();
+    //console.log("clicked id: ", id);
   };
 
   return (
-    <article className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:p-8">
+    <article
+      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.6)] transition-opacity sm:p-8 ${
+        isPending ? "opacity-70" : ""
+      }`}
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-400/10 via-slate-500/5 to-transparent" />
       <div className="pointer-events-none absolute -left-px top-[30%] h-[20%] w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
 
@@ -80,24 +102,14 @@ export default function PrepPlanCard({
           </div>
 
           <div className="flex shrink-0 items-center">
-            <IconButton
-              label="Move plan up"
-              onClick={() => actions.movePlan(plan.id, -1)}
-              disabled={isFirst}
-            >
-              <ChevronUp className="h-4 w-4" />
-            </IconButton>
-            <IconButton
-              label="Move plan down"
-              onClick={() => actions.movePlan(plan.id, 1)}
-              disabled={isLast}
-            >
-              <ChevronDown className="h-4 w-4" />
-            </IconButton>
-            <IconButton label="Edit plan" onClick={() => onEdit(plan)}>
+            <IconButton label="Edit plan" onClick={editState.open}>
               <Pencil className="h-4 w-4" />
             </IconButton>
-            <IconButton label="Delete plan" onClick={handleDelete} danger>
+            <IconButton
+              label="Delete plan"
+              onClick={() => handleDelete(plan._id)}
+              danger
+            >
               <TrashBin className="h-4 w-4" />
             </IconButton>
           </div>
@@ -125,27 +137,42 @@ export default function PrepPlanCard({
           </div>
         </div>
 
-        {plan.topics.length === 0 ? (
+        {total === 0 ? (
           <p className="mt-6 text-sm text-white/40">
             No topics yet. Add the first one below.
           </p>
         ) : (
-          <ul className="mt-4">
-            {plan.topics.map((topic, index) => (
-              <PrepTopicItem
-                key={topic.id}
-                topic={topic}
-                isFirst={index === 0}
-                isLast={index === plan.topics.length - 1}
-                onToggle={() => actions.toggleTopic(plan.id, topic.id)}
-                onRename={(title) =>
-                  actions.renameTopic(plan.id, topic.id, title)
-                }
-                onMove={(direction) =>
-                  actions.moveTopic(plan.id, topic.id, direction)
-                }
-                onDelete={() => actions.deleteTopic(plan.id, topic.id)}
-              />
+          <ul className="mt-4 flex flex-col">
+            {topics.map((topic) => (
+              <li
+                key={topic._id}
+                className="group flex items-center gap-3 border-b border-white/5 py-2.5 last:border-b-0"
+              >
+                <input
+                  id={`topic-${topic._id}`}
+                  type="checkbox"
+                  checked={topic.done}
+                  onChange={() =>
+                    run(() => toggleTopic(plan._id, topic._id, !topic.done))
+                  }
+                  className="h-4 w-4 cursor-pointer accent-blue-500"
+                />
+                <label
+                  htmlFor={`topic-${topic._id}`}
+                  className={`min-w-0 flex-1 cursor-pointer break-words text-sm ${
+                    topic.done ? "text-white/40 line-through" : "text-white/80"
+                  }`}
+                >
+                  {topic.title}
+                </label>
+                <IconButton
+                  label="Delete topic"
+                  onClick={() => run(() => deleteTopic(plan._id, topic._id))}
+                  danger
+                >
+                  <TrashBin className="h-4 w-4" />
+                </IconButton>
+              </li>
             ))}
           </ul>
         )}
@@ -160,13 +187,15 @@ export default function PrepPlanCard({
           />
           <Button
             type="submit"
-            isDisabled={!newTopic.trim()}
+            isDisabled={!newTopic.trim() || isPending}
             className="bg-white font-medium text-black hover:bg-gray-200"
           >
             Add
           </Button>
         </form>
       </div>
+
+      {/* <EditPrepPlanModal state={editState} plan={plan} /> */}
     </article>
   );
 }
