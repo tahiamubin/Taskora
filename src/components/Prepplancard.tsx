@@ -15,6 +15,7 @@ import {
   deleteInterview,
 } from "../lib/actions/interview-prep";
 import { authClient } from "../lib/auth-client";
+import EditPrepPlanButton from "./EditPrepPlanModal";
 
 interface PrepPlanCardProps {
   plan: PrepPlan;
@@ -61,7 +62,6 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
   };
 
   const handleDelete = async (id: string) => {
-    //console.log("clicked id: ", id)
     await deleteInterview(id);
     router.refresh();
     //console.log("clicked id: ", id);
@@ -103,7 +103,7 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
 
           <div className="flex shrink-0 items-center">
             <IconButton label="Edit plan" onClick={editState.open}>
-              <Pencil className="h-4 w-4" />
+              <EditPrepPlanButton plan={plan}></EditPrepPlanButton>
             </IconButton>
             <IconButton
               label="Delete plan"
@@ -195,7 +195,7 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
         </form>
       </div>
 
-      {/* <EditPrepPlanModal state={editState} plan={plan} /> */}
+      {/* <EditPrepPlanButton plan={plan}></EditPrepPlanButton> */}
     </article>
   );
 }

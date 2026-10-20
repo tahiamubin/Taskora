@@ -2,6 +2,7 @@ export interface PlanFormValues {
   title: string;
   company: string;
   targetDate: string; // "YYYY-MM-DD"
+  userId: string;
 }
 
 export interface Topic {
