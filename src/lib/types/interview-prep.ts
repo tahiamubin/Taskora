@@ -5,10 +5,15 @@ export interface PlanFormValues {
   userId: string;
 }
 
+
 export interface Topic {
   id: string;
   title: string;
   isDone: boolean;
+}
+export interface PrepPlan {
+  _id: string;
+  topics?: Topic[];
 }
 
 export interface CreateTopicPayload {
