@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import { Pencil } from "@gravity-ui/icons";
 import { Button, Label, Modal, useOverlayState } from "@heroui/react";
 
-import type { PlanFormValues, PrepPlan } from "../lib/types/interview-prep";
-import IconButton from "./Iconbutton";
+import type { PlanFormValues } from "../lib/types/interview-prep";
+
 import { updateInterview } from "../lib/actions/interview-prep";
+import IconButton from "./Iconbutton";
 
 const inputClass =
   "w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30";
 
-export default function EditPrepPlanButton({ plan }: { plan: PrepPlan }) {
+export default function EditPrepPlanButton({ plan }: { plan: PlanFormValues }) {
   const router = useRouter();
   const state = useOverlayState();
   const formId = useId();

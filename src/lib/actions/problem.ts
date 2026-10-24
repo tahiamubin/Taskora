@@ -44,3 +44,29 @@ export const deleteClass = async (id: string) => {
 
   return res.json();
 };
+
+export const getInterviewTopics = async (planId: string, userId: string) => {
+  const res = await fetch(
+    `${baseUrl}/interview-topic/${planId}?userId=${userId}`,
+    { cache: "no-store" },
+  );
+
+  return res.json();
+};
+
+export const toggleInterviewTopic = async (
+  planId: string,
+  topicId: string,
+  userId: string,
+  isDone: boolean,
+) => {
+  const res = await fetch(`${baseUrl}/interview-topic/${planId}/${topicId}`, {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ userId, isDone }),
+  });
+
+  return res.json();
+};

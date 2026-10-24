@@ -1,14 +1,20 @@
-
-
 import PrepPlanCard from "@/src/components/Prepplancard";
 import AddPrepPlanModal from "@/src/components/Prepplanmodal";
-import { getInterviewPrepById } from "@/src/lib/api/interview-prep";
+import {
+  getInterviewPrepById,
+  getInterviewTopics,
+} from "@/src/lib/api/interview-prep";
 import { getUser } from "@/src/lib/api/user";
+import type { PrepPlan } from "@/src/lib/types/interview-prep";
 
 const InterviewPrep = async () => {
   const session = await getUser();
   const userId = session?.user?.id as string;
-  const plans = await getInterviewPrepById(userId);
+  const plans: PrepPlan[] = await getInterviewPrepById(userId);
+
+  for (const plan of plans) {
+    plan.topics = await getInterviewTopics(plan._id, userId);
+  }
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden px-4 py-24 sm:px-8">
@@ -47,13 +53,8 @@ const InterviewPrep = async () => {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            {plans.map((plan, index) => (
-              <PrepPlanCard
-                key={plan._id}
-                plan={plan}
-                isFirst={index === 0}
-                isLast={index === plans.length - 1}
-              />
+            {plans.map((plan) => (
+              <PrepPlanCard key={plan._id} plan={plan} />
             ))}
           </div>
         )}

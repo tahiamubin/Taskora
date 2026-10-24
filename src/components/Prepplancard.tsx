@@ -1,21 +1,15 @@
 "use client";
 
-import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, useOverlayState } from "@heroui/react";
-import { Calendar, Pencil, TrashBin } from "@gravity-ui/icons";
+import { Button } from "@heroui/react";
+import { Calendar, TrashBin } from "@gravity-ui/icons";
 
 import { formatDate, formatDaysLeft, getDaysLeft } from "../lib/utils/Prep";
-
-import IconButton from "./Iconbutton";
-
-import { PrepPlan, Topic } from "../lib/types/interview-prep";
-import {
-  createInterviewTopic,
-  deleteInterview,
-} from "../lib/actions/interview-prep";
-import { authClient } from "../lib/auth-client";
+import type { PrepPlan } from "../lib/types/interview-prep";
+import { deleteInterview } from "../lib/actions/interview-prep";
 import EditPrepPlanButton from "./EditPrepPlanModal";
+import AddTopicOnInterview from "./AddTopicOnInterview";
+import TopicList from "./TopicList";
 
 interface PrepPlanCardProps {
   plan: PrepPlan;
@@ -23,56 +17,20 @@ interface PrepPlanCardProps {
 
 export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
   const router = useRouter();
-  const editState = useOverlayState();
-  const [isPending, startTransition] = useTransition();
-  const [newTopic, setNewTopic] = useState("");
 
   const topics = plan.topics ?? [];
   const total = topics.length;
-  const done = topics.filter((t) => t.done).length;
+  const done = topics.filter((topic) => topic.isDone).length;
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
   const daysLeft = getDaysLeft(plan.targetDate);
 
-  const run = (task: () => Promise<unknown>) => {
-    startTransition(async () => {
-      try {
-        await task();
-        router.refresh();
-      } catch (err) {
-        window.alert(
-          err instanceof Error ? err.message : "Something went wrong.",
-        );
-      }
-    });
-  };
-
-  const handleAddTopic = async (e: FormEvent<HTMLFormElement>) => {
-    const { data: session } = authClient.useSession();
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()) as unknown as Topic;
-    //console.log(data);
-    const topicData = {
-      ...data,
-      userId: session?.user.id,
-    };
-
-    await createInterviewTopic(topicData);
-  };
-
-  const handleDelete = async (id: string) => {
-    await deleteInterview(id);
+  const handleDelete = async () => {
+    await deleteInterview(plan._id);
     router.refresh();
-    //console.log("clicked id: ", id);
   };
 
   return (
-    <article
-      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.6)] transition-opacity sm:p-8 ${
-        isPending ? "opacity-70" : ""
-      }`}
-    >
+    <article className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:p-8">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-400/10 via-slate-500/5 to-transparent" />
       <div className="pointer-events-none absolute -left-px top-[30%] h-[20%] w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
 
@@ -102,16 +60,17 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
           </div>
 
           <div className="flex shrink-0 items-center">
-            <IconButton label="Edit plan" onClick={editState.open}>
-              <EditPrepPlanButton plan={plan}></EditPrepPlanButton>
-            </IconButton>
-            <IconButton
-              label="Delete plan"
-              onClick={() => handleDelete(plan._id)}
-              danger
+            <EditPrepPlanButton plan={plan} />
+            <Button
+              isIconOnly
+              size="sm"
+              variant="ghost"
+              aria-label="Delete plan"
+              onPress={handleDelete}
+              className="rounded-full text-white/50 hover:text-red-400"
             >
               <TrashBin className="h-4 w-4" />
-            </IconButton>
+            </Button>
           </div>
         </header>
 
@@ -137,65 +96,9 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
           </div>
         </div>
 
-        {total === 0 ? (
-          <p className="mt-6 text-sm text-white/40">
-            No topics yet. Add the first one below.
-          </p>
-        ) : (
-          <ul className="mt-4 flex flex-col">
-            {topics.map((topic) => (
-              <li
-                key={topic._id}
-                className="group flex items-center gap-3 border-b border-white/5 py-2.5 last:border-b-0"
-              >
-                <input
-                  id={`topic-${topic._id}`}
-                  type="checkbox"
-                  checked={topic.done}
-                  onChange={() =>
-                    run(() => toggleTopic(plan._id, topic._id, !topic.done))
-                  }
-                  className="h-4 w-4 cursor-pointer accent-blue-500"
-                />
-                <label
-                  htmlFor={`topic-${topic._id}`}
-                  className={`min-w-0 flex-1 cursor-pointer break-words text-sm ${
-                    topic.done ? "text-white/40 line-through" : "text-white/80"
-                  }`}
-                >
-                  {topic.title}
-                </label>
-                <IconButton
-                  label="Delete topic"
-                  onClick={() => run(() => deleteTopic(plan._id, topic._id))}
-                  danger
-                >
-                  <TrashBin className="h-4 w-4" />
-                </IconButton>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <form onSubmit={handleAddTopic} className="mt-5 flex gap-2">
-          <input
-            value={newTopic}
-            onChange={(e) => setNewTopic(e.target.value)}
-            aria-label="New topic"
-            placeholder="Add a topic, e.g. Binary Search"
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
-          />
-          <Button
-            type="submit"
-            isDisabled={!newTopic.trim() || isPending}
-            className="bg-white font-medium text-black hover:bg-gray-200"
-          >
-            Add
-          </Button>
-        </form>
+        <TopicList planId={plan._id} topics={topics} />
+        <AddTopicOnInterview planId={plan._id} />
       </div>
-
-      {/* <EditPrepPlanButton plan={plan}></EditPrepPlanButton> */}
     </article>
   );
 }

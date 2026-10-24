@@ -27,7 +27,7 @@ export default function AddPrepPlanModal() {
     const helpData = {
       ...data,
       userId: session?.user.id,
-    };
+    } as PlanFormValues;
 
 
     await createInterviewPrep(helpData);

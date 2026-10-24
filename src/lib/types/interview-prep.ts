@@ -6,12 +6,20 @@ export interface PlanFormValues {
 }
 
 export interface Topic {
-  _id: string;
+  id: string;
   title: string;
-  done: boolean;
+  isDone: boolean;
 }
 
-export interface PrepPlan extends PlanFormValues {
-  _id: string;
-  topics: Topic[];
+export interface CreateTopicPayload {
+  planId: string;
+  userId: string;
+  title: string;
+}
+
+export interface ToggleTopicPayload {
+  planId: string;
+  topicId: string;
+  userId: string;
+  isDone: boolean;
 }

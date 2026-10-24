@@ -23,7 +23,7 @@ const MyHelpCard: React.FC<MyHelpCardProps> = ({ help }) => {
   };
 
   const handleDelete = async (id: string) => {
-    //console.log(id);
+ 
     await deleteSharedHelp(id);
     toast.success("Help request deleted successfully!");
     router.refresh();
