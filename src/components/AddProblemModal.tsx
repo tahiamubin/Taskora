@@ -22,7 +22,7 @@ export default function AddProblemModal() {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries()) as unknown as Problem;
-    const helpData = {
+    const problemData = {
       ...data,
       userId: session?.user.id,
     };
@@ -31,7 +31,7 @@ export default function AddProblemModal() {
     setError(null);
 
     try {
-      await createProblemLog(helpData);
+      await createProblemLog(problemData);
       form.reset();
       state.close();
       router.refresh();
@@ -156,7 +156,7 @@ export default function AddProblemModal() {
 
                   <fieldset className="flex flex-col gap-3">
                     <legend className="text-sm font-medium text-gray-200">
-                      Attempted to Solve?
+                      Did you fail the first time?
                     </legend>
 
                     <div className="flex gap-5">

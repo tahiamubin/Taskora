@@ -17,7 +17,6 @@ export default function AddContestModal() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -166,6 +165,32 @@ export default function AddContestModal() {
                       className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
                     />
                   </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="rank" className="text-gray-200">
+                      Your Rank
+                    </Label>
+                    <input
+                      id="rank"
+                      name="rank"
+                      type="number"
+                      required
+                      placeholder="e.g. 1st position"
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="participants" className="text-gray-200">
+                      Total participants
+                    </Label>
+                    <input
+                      id="participants"
+                      name="participants"
+                      type="participants"
+                      required
+                      placeholder="e.g. 5000"
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-gray-500 focus:border-white/30"
+                    />
+                  </div>
 
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="description" className="text-gray-200">
@@ -200,7 +225,7 @@ export default function AddContestModal() {
                   isPending={isSubmitting}
                   className="bg-white font-medium text-black hover:bg-gray-200"
                 >
-                  Add Problem
+                  Add contest
                 </Button>
               </Modal.Footer>
             </Modal.Dialog>
