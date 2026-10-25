@@ -12,9 +12,11 @@ const InterviewPrep = async () => {
   const userId = session?.user?.id as string;
   const plans: PrepPlan[] = await getInterviewPrepById(userId);
 
-  for (const plan of plans) {
-    plan.topics = await getInterviewTopics(plan._id, userId);
-  }
+  await Promise.all(
+    plans.map(async (plan) => {
+      plan.topics = await getInterviewTopics(plan._id, userId);
+    }),
+  );
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden px-4 py-24 sm:px-8">

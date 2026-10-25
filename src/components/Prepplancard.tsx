@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@heroui/react";
 import { Calendar, TrashBin } from "@gravity-ui/icons";
 
-import { formatDate, formatDaysLeft, getDaysLeft } from "../lib/utils/Prep";
 import type { PrepPlan } from "../lib/types/interview-prep";
 import { deleteInterview } from "../lib/actions/interview-prep";
 import EditPrepPlanButton from "./EditPrepPlanModal";
@@ -16,16 +15,16 @@ interface PrepPlanCardProps {
 }
 
 export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
+  //console.log(plan)
   const router = useRouter();
 
   const topics = plan.topics ?? [];
   const total = topics.length;
   const done = topics.filter((topic) => topic.isDone).length;
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-  const daysLeft = getDaysLeft(plan.targetDate);
 
   const handleDelete = async () => {
-    await deleteInterview(plan._id);
+    await deleteInterview(plan.id);
     router.refresh();
   };
 
@@ -45,16 +44,7 @@ export default function PrepPlanCard({ plan }: PrepPlanCardProps) {
               <span>{plan.company}</span>
               <span className="inline-flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
-                {formatDate(plan.targetDate)}
-              </span>
-              <span
-                className={`rounded-full border px-2.5 py-0.5 text-xs ${
-                  daysLeft < 0
-                    ? "border-white/10 bg-white/5 text-white/40"
-                    : "border-blue-500/30 bg-blue-500/10 text-blue-300"
-                }`}
-              >
-                {formatDaysLeft(daysLeft)}
+                {String(plan.targetDate).slice(0, 10)}
               </span>
             </div>
           </div>

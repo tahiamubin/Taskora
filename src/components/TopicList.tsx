@@ -7,18 +7,19 @@ import { authClient } from "../lib/auth-client";
 import type { Topic } from "../lib/types/interview-prep";
 import { toggleInterviewTopic } from "../lib/api/interview-prep";
 
-
-
-interface TopicListProps {
+export default function TopicList({
+  planId,
+  topics,
+}: {
   planId: string;
   topics: Topic[];
-}
-
-export default function TopicList({ planId, topics }: TopicListProps) {
+}) {
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  //console.log(topics[0]); 
 
   const handleToggle = async (topic: Topic) => {
     const userId = session?.user.id;
@@ -50,7 +51,6 @@ export default function TopicList({ planId, topics }: TopicListProps) {
     );
   }
 
-
   return (
     <>
       <ol className="mt-4">
@@ -66,7 +66,7 @@ export default function TopicList({ planId, topics }: TopicListProps) {
             <input
               type="checkbox"
               checked={topic.isDone}
-              disabled={pendingId === topic.id}
+              disabled={pendingId === topic._id}
               onChange={() => handleToggle(topic)}
               aria-label={`Mark "${topic.title}" as done`}
               className="size-4 shrink-0 accent-blue-500"
