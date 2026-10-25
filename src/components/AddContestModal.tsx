@@ -10,13 +10,14 @@ import { createContest } from "../lib/actions/contest";
 import { authClient } from "../lib/auth-client";
 
 export default function AddContestModal() {
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const state = useOverlayState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    const { data: session } = authClient.useSession();
+    
     e.preventDefault();
     if (isSubmitting) return;
 
@@ -26,16 +27,17 @@ export default function AddContestModal() {
       formData.entries(),
     ) as unknown as ContestFormData;
     //console.log(data);
-    const helpData = {
+    const contestData = {
       ...data,
       userId: session?.user.id,
     };
+    //console.log("contest data",contestData)
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createContest(helpData);
+      await createContest(contestData);
       form.reset();
       state.close();
       router.refresh();

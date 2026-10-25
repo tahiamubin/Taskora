@@ -54,7 +54,7 @@ const InterviewPrep = async () => {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="grid lg:grid-cols-2 md:grid-cols-1 sm:grid-cols-1  gap-6 ">
             {plans.map((plan) => (
               <PrepPlanCard key={plan._id} plan={plan} />
             ))}

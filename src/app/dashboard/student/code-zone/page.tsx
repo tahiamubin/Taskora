@@ -1,21 +1,25 @@
 import { CodingActivity } from "@/src/components/CodingActivity";
-import { getAllProblem } from "@/src/lib/api/problem";
+import { getAllProblemById } from "@/src/lib/api/problem";
 
 import { ProblemList } from "@/src/components/ProblemList";
-import { getAllContest } from "@/src/lib/api/contest";
+import { getAllContestById } from "@/src/lib/api/contest";
 import { ContestList } from "@/src/components/ContestList";
+import { getUser } from "@/src/lib/api/user";
 
 const ProblemLogPage = async () => {
-  const problems = await getAllProblem();
-  const contests = await getAllContest()
- // const length = contests.length
-  //console.log(length)
+  const user = await getUser();
+  const userId = user?.session.userId as string;
+
+  const problems = await getAllProblemById(userId);
+  const contests = await getAllContestById(userId);
+  // const length = contests.length
+  //console.log(problems);
 
   return (
     <div>
       <CodingActivity
         length={problems.length}
-        contestLength = {contests.length}
+        contestLength={contests.length}
         problemsContent={<ProblemList problem={problems} />}
         contestsContent={<ContestList contest={contests} />}
       />

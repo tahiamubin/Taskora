@@ -2,7 +2,7 @@
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export const getAllProblem = async () => {
-  const res = await fetch(`${baseUrl}/problems`);
+export const getAllProblemById = async (id: string) => {
+  const res = await fetch(`${baseUrl}/problems/${id}`);
   return res.json();
 };
