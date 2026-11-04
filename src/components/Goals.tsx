@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   FiAward,
   FiCheck,
@@ -96,6 +99,8 @@ const GoalRow = ({ icon, title, value, children }: GoalRowProps) => (
 
 const Goals = () => {
   const maxWeekly = Math.max(...problemGoal.weekly);
+  const reduce = useReducedMotion();
+  const t = (v: any) => (reduce ? {} : v);
 
   return (
     <section
@@ -107,28 +112,50 @@ const Goals = () => {
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
         {/* Left: copy */}
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+        >
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60"
+          >
             <FiTarget className="h-3.5 w-3.5 text-blue-500" />
             <span>
               <span className="text-blue-500">//</span> goals
             </span>
-          </div>
+          </motion.div>
 
-          <h2 className="mt-6 text-3xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
+          <motion.h2
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-6 text-3xl font-medium leading-tight tracking-tight text-white sm:text-5xl"
+          >
             Set the target.{" "}
             <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-sky-300 bg-clip-text text-transparent">
               We track the rest.
             </span>
-          </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
+          </motion.h2>
+          <motion.p
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-5 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
+          >
             Turn &quot;I should practice more&quot; into a plan you can
             measure. Set monthly goals and watch them fill up on their own.
-          </p>
+          </motion.p>
 
-          <ul className="mt-10 space-y-5">
+          <motion.ul
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+            className="mt-10 space-y-5"
+          >
             {features.map((f) => (
-              <li key={f.title} className="flex items-start gap-4">
+              <motion.li
+                key={f.title}
+                variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}
+                whileHover={t({ x: 4 })}
+                className="flex items-start gap-4"
+              >
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-blue-500">
                   {f.icon}
                 </div>
@@ -138,13 +165,19 @@ const Goals = () => {
                     {f.desc}
                   </p>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
 
         {/* Right: goals mockup */}
-        <div className="relative mx-auto w-full max-w-[560px]">
+        <motion.div
+          initial={t({ opacity: 0, y: 40, scale: 0.97 })}
+          whileInView={t({ opacity: 1, y: 0, scale: 1 })}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-[560px]"
+        >
           <div className="absolute -inset-4 rounded-[48px] bg-blue-600/10 blur-2xl" />
 
           <div className="relative overflow-hidden rounded-[44px] border-2 border-white/10 bg-[#111111] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:p-8">
@@ -179,9 +212,12 @@ const Goals = () => {
                   <span className="text-blue-400">{overall}%</span>
                 </div>
                 <div className="h-2.5 overflow-hidden rounded-full bg-white/[0.06]">
-                  <div
+                  <motion.div
+                    initial={t({ width: 0 })}
+                    whileInView={t({ width: `${overall}%` })}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
                     className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400"
-                    style={{ width: `${overall}%` }}
                   />
                 </div>
               </div>
@@ -194,19 +230,23 @@ const Goals = () => {
                   value={`${problemGoal.done} / ${problemGoal.target}`}
                 >
                   <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-                    <div
+                    <motion.div
+                      initial={t({ width: 0 })}
+                      whileInView={t({ width: `${(problemGoal.done / problemGoal.target) * 100}%` })}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
                       className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-400"
-                      style={{
-                        width: `${(problemGoal.done / problemGoal.target) * 100}%`,
-                      }}
                     />
                   </div>
                   <div className="mt-4 flex h-12 items-end gap-2">
                     {problemGoal.weekly.map((w, i) => (
                       <div key={i} className="flex flex-1 flex-col items-center gap-1">
-                        <div
+                        <motion.div
+                          initial={t({ height: 0 })}
+                          whileInView={t({ height: `${(w / maxWeekly) * 100}%` })}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.5 + i * 0.1 }}
                           className="w-full rounded-md bg-blue-500/40"
-                          style={{ height: `${(w / maxWeekly) * 100}%` }}
                         />
                       </div>
                     ))}
@@ -230,8 +270,12 @@ const Goals = () => {
                     {Array.from({ length: contestGoal.target }, (_, i) => {
                       const filled = i < contestGoal.done;
                       return (
-                        <div
+                        <motion.div
                           key={i}
+                          initial={t({ opacity: 0, scale: 0.8 })}
+                          whileInView={t({ opacity: 1, scale: 1 })}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 + i * 0.1 }}
                           className={`flex h-10 flex-1 items-center justify-center rounded-2xl border text-xs ${
                             filled
                               ? "border-blue-500/30 bg-blue-500/15 text-blue-300"
@@ -239,7 +283,7 @@ const Goals = () => {
                           }`}
                         >
                           {filled ? <FiCheck className="h-4 w-4" /> : "next"}
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -252,34 +296,45 @@ const Goals = () => {
                   value={`${topicsDone} / ${topics.length}`}
                 >
                   <div className="flex flex-wrap gap-2">
-                    {topics.map((t) => (
-                      <span
-                        key={t.name}
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs ${topicStyles[t.status]}`}
+                    {topics.map((topic, i) => (
+                      <motion.span
+                        key={topic.name}
+                        initial={t({ opacity: 0, scale: 0.9, y: 8 })}
+                        whileInView={t({ opacity: 1, scale: 1, y: 0 })}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1], delay: 0.7 + i * 0.06 }}
+                        whileHover={t({ y: -2 })}
+                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs ${topicStyles[topic.status]}`}
                       >
-                        {t.status === "done" && (
+                        {topic.status === "done" && (
                           <FiCheckCircle className="h-3.5 w-3.5" />
                         )}
-                        {t.status === "progress" && (
+                        {topic.status === "progress" && (
                           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-400" />
                         )}
-                        {t.name}
-                      </span>
+                        {topic.name}
+                      </motion.span>
                     ))}
                   </div>
                 </GoalRow>
               </div>
 
-              <button
+              <motion.button
                 type="button"
+                initial={t({ opacity: 0, y: 10 })}
+                whileInView={t({ opacity: 1, y: 0 })}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                whileHover={t({ y: -2, scale: 1.01 })}
+                whileTap={t({ scale: 0.98 })}
                 className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-full border border-dashed border-white/15 text-sm font-medium text-white/50 transition-all duration-300 hover:border-blue-500/40 hover:bg-white/[0.04] hover:text-white"
               >
                 <FiPlus className="h-4 w-4" />
                 Add a goal
-              </button>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

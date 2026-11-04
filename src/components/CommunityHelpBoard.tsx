@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
 import {
   FiArrowUp,
   FiCheckCircle,
@@ -8,6 +11,12 @@ import {
   FiUsers,
 } from "react-icons/fi";
 
+const codeLines: string[] = [
+  "void dfs(int u, int p) {",
+  "  for (int v : adj[u])",
+  "    if (v != p) dfs(v, u);",
+  "}",
+];
 const features: { icon: ReactNode; title: string; desc: string }[] = [
   {
     icon: <FiHelpCircle className="h-5 w-5" />,
@@ -31,13 +40,6 @@ const features: { icon: ReactNode; title: string; desc: string }[] = [
   },
 ];
 
-const codeLines: string[] = [
-  "void dfs(int u, int p) {",
-  "  for (int v : adj[u])",
-  "    if (v != p) dfs(v, u);",
-  "}",
-];
-
 const CommunityHelpBoard = () => {
   return (
     <section
@@ -48,7 +50,13 @@ const CommunityHelpBoard = () => {
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
         {/* Mockup (left on desktop) */}
-        <div className="relative mx-auto w-full max-w-[560px]">
+        <motion.div
+          initial={{ opacity: 0, y: 40, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-[560px]"
+        >
           <div className="absolute -inset-4 rounded-[48px] bg-blue-600/10 blur-2xl" />
 
           <div className="relative overflow-hidden rounded-[44px] border-2 border-white/10 bg-[#111111] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.6)] sm:p-8">
@@ -85,13 +93,17 @@ const CommunityHelpBoard = () => {
                 </p>
 
                 <div className="mt-2 flex gap-2">
-                  {["graphs", "c++", "recursion"].map((t) => (
-                    <span
-                      key={t}
+                  {["graphs", "c++", "recursion"].map((tag, i) => (
+                    <motion.span
+                      key={tag}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: 0.4 + i * 0.1 }}
                       className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 font-mono text-[11px] text-white/50"
                     >
-                      {t}
-                    </span>
+                      {tag}
+                    </motion.span>
                   ))}
                 </div>
 
@@ -100,15 +112,28 @@ const CommunityHelpBoard = () => {
                 </p>
                 <div className="mt-2 rounded-2xl border border-white/5 bg-[#0a0a0a] p-3 font-mono text-xs leading-6 text-white/60">
                   {codeLines.map((line, i) => (
-                    <div key={i} className="whitespace-pre">
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -6 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: 0.6 + i * 0.1 }}
+                      className="whitespace-pre"
+                    >
                       {line}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
 
               {/* Accepted answer */}
-              <div className="rounded-3xl border border-emerald-400/25 bg-emerald-400/[0.06] p-5">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1 }}
+                className="rounded-3xl border border-emerald-400/25 bg-emerald-400/[0.06] p-5"
+              >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-3 py-1 text-[11px] font-medium text-emerald-300">
                     <FiCheckCircle className="h-3.5 w-3.5" />
@@ -125,10 +150,16 @@ const CommunityHelpBoard = () => {
                 <p className="mt-2 font-mono text-[11px] text-white/30">
                   Daniel O. · Gold
                 </p>
-              </div>
+              </motion.div>
 
               {/* Other answer */}
-              <div className="rounded-3xl border border-white/5 bg-black/50 p-5">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                className="rounded-3xl border border-white/5 bg-black/50 p-5"
+              >
                 <div className="mb-2 flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-white/40">
                     <FiMessageSquare className="h-3.5 w-3.5" />
@@ -142,33 +173,55 @@ const CommunityHelpBoard = () => {
                   Also check that you are not copying the adjacency list on
                   every call.
                 </p>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Copy */}
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+        >
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60"
+          >
             <FiMessageSquare className="h-3.5 w-3.5 text-blue-500" />
             <span>
               <span className="text-blue-500">//</span> community help board
             </span>
-          </div>
+          </motion.div>
 
-          <h2 className="mt-6 text-3xl font-medium leading-tight tracking-tight text-white sm:text-5xl">
+          <motion.h2
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-6 text-3xl font-medium leading-tight tracking-tight text-white sm:text-5xl"
+          >
             Never debug{" "}
             <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-sky-300 bg-clip-text text-transparent">
               alone
             </span>
-          </h2>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg">
+          </motion.h2>
+          <motion.p
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-5 max-w-xl text-base leading-relaxed text-white/60 sm:text-lg"
+          >
             A help board built for students. Ask, answer and learn together.
-          </p>
+          </motion.p>
 
-          <ul className="mt-10 space-y-5">
+          <motion.ul
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+            className="mt-10 space-y-5"
+          >
             {features.map((f) => (
-              <li key={f.title} className="flex items-start gap-4">
+              <motion.li
+                key={f.title}
+                variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}
+                whileHover={{ x: 4 }}
+                className="flex items-start gap-4"
+              >
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-blue-500">
                   {f.icon}
                 </div>
@@ -178,10 +231,10 @@ const CommunityHelpBoard = () => {
                     {f.desc}
                   </p>
                 </div>
-              </li>
+              </motion.li>
             ))}
-          </ul>
-        </div>
+          </motion.ul>
+        </motion.div>
       </div>
     </section>
   );

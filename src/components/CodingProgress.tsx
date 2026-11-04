@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { FaFire, FaMedal, FaTrophy } from "react-icons/fa";
 import {
   FiActivity,
@@ -98,6 +101,9 @@ const Card = ({ title, icon, className = "", children }: CardProps) => (
 /* ----------------------------- Component ----------------------------- */
 
 const CodingProgress = () => {
+  const reduce = useReducedMotion();
+  const t = (v: any) => (reduce ? {} : v);
+
   // Donut segments
   const r = 52;
   const C = 2 * Math.PI * r;
@@ -120,24 +126,39 @@ const CodingProgress = () => {
 
       <div className="relative mx-auto max-w-7xl">
         {/* Header */}
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+          className="mx-auto max-w-2xl text-center"
+        >
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60"
+          >
             <FiCode className="h-3.5 w-3.5 text-blue-500" />
             <span>
               <span className="text-blue-500">//</span> coding progress
             </span>
-          </div>
-          <h2 className="mt-6 text-3xl font-medium tracking-tight text-white sm:text-5xl">
+          </motion.div>
+          <motion.h2
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-6 text-3xl font-medium tracking-tight text-white sm:text-5xl"
+          >
             See every step of your{" "}
             <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-sky-300 bg-clip-text text-transparent">
               growth
             </span>
-          </h2>
-          <p className="mt-5 text-base leading-relaxed text-white/60 sm:text-lg">
+          </motion.h2>
+          <motion.p
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-5 text-base leading-relaxed text-white/60 sm:text-lg"
+          >
             Problems, contests, points and streaks, all tracked automatically
             so you always know where you stand.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-3">
           {/* Solved problems */}
