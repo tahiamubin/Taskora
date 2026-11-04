@@ -7,8 +7,7 @@ import { Button, Drawer } from "@heroui/react";
 import type { IconType } from "react-icons";
 import { FaCode } from "react-icons/fa";
 import {
-  FiAward,
-  FiBarChart2,
+
   FiBell,
   FiBookOpen,
   FiCode,
