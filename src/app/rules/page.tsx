@@ -1,5 +1,8 @@
+"use client";
+
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { motion } from "framer-motion";
 import { FaGem, FaMedal } from "react-icons/fa";
 import {
   FiAlertTriangle,
@@ -20,12 +23,6 @@ import {
   FiXCircle,
   FiZap,
 } from "react-icons/fi";
-
-export const metadata: Metadata = {
-  title: "Rules | CodeTrail",
-  description:
-    "Community rules, points, levels, moderation and privacy on CodeTrail.",
-};
 
 /* ----------------------------- Data ----------------------------- */
 
@@ -203,243 +200,350 @@ export default function RulesPage() {
 
       <div className="relative mx-auto max-w-5xl">
         {/* Header */}
-        <header className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60">
+        <motion.header
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+          className="text-center"
+        >
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 font-mono text-xs text-white/60"
+          >
             <FiShield className="h-3.5 w-3.5 text-blue-500" />
             <span>
               <span className="text-blue-500">$</span> cat rules.md
             </span>
-          </div>
-          <h1 className="mt-6 text-4xl font-medium tracking-tight text-white sm:text-6xl">
+          </motion.div>
+          <motion.h1
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mt-6 text-4xl font-medium tracking-tight text-white sm:text-6xl"
+          >
             Community{" "}
             <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-sky-300 bg-clip-text text-transparent">
               rules
             </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">
+          </motion.h1>
+          <motion.p
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+            className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg"
+          >
             A few simple rules keep CodeTrail fair, helpful and safe for every
             student.
-          </p>
+          </motion.p>
 
-          <nav className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          <motion.nav
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
             {sections.map((s) => (
-              <a
+              <motion.a
                 key={s.id}
                 href={`#${s.id}`}
+                variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.4 } } }}
+                whileHover={{ y: -2 }}
                 className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white/60 transition-all duration-300 hover:bg-white/[0.1] hover:text-white"
               >
                 {s.label}
-              </a>
+              </motion.a>
             ))}
-          </nav>
-        </header>
+          </motion.nav>
+        </motion.header>
 
         <div className="mt-20 space-y-24">
           {/* 1. Community rules */}
-          <Section
-            id="community"
-            eyebrow="community rules"
-            title="The core rules"
-            intro="Follow these everywhere on CodeTrail."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Card>
-              <ul className="divide-y divide-white/5">
-                {communityRules.map((r, i) => (
-                  <li
-                    key={r.title}
-                    className="flex items-start gap-4 py-5 first:pt-0 last:pb-0"
-                  >
-                    <IconBubble>{r.icon}</IconBubble>
-                    <div>
-                      <p className="text-base font-medium text-white">
-                        <span className="mr-2 font-mono text-sm text-white/30">
-                          0{i + 1}
-                        </span>
-                        {r.title}
-                      </p>
-                      <p className="mt-1 text-sm leading-relaxed text-white/50">
-                        {r.desc}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </Section>
+            <Section
+              id="community"
+              eyebrow="community rules"
+              title="The core rules"
+              intro="Follow these everywhere on CodeTrail."
+            >
+              <Card>
+                <ul className="divide-y divide-white/5">
+                  {communityRules.map((r, i) => (
+                    <motion.li
+                      key={r.title}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.08 }}
+                      className="flex items-start gap-4 py-5 first:pt-0 last:pb-0"
+                    >
+                      <IconBubble>{r.icon}</IconBubble>
+                      <div>
+                        <p className="text-base font-medium text-white">
+                          <span className="mr-2 font-mono text-sm text-white/30">
+                            0{i + 1}
+                          </span>
+                          {r.title}
+                        </p>
+                        <p className="mt-1 text-sm leading-relaxed text-white/50">
+                          {r.desc}
+                        </p>
+                      </div>
+                    </motion.li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          </motion.div>
 
           {/* 2. Points */}
-          <Section
-            id="points"
-            eyebrow="points rules"
-            title="How points work"
-            intro="Earn points for real progress and real help."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <div className="mb-5 flex items-center gap-3">
-                  <IconBubble>
-                    <FiZap className="h-5 w-5" />
-                  </IconBubble>
-                  <h3 className="text-lg font-medium text-white">Problems</h3>
-                </div>
-                <ul className="space-y-2">
-                  {problemPoints.map((p) => (
-                    <PointRow key={p.label} {...p} />
-                  ))}
-                </ul>
-              </Card>
+            <Section
+              id="points"
+              eyebrow="points rules"
+              title="How points work"
+              intro="Earn points for real progress and real help."
+            >
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card>
+                  <div className="mb-5 flex items-center gap-3">
+                    <IconBubble>
+                      <FiZap className="h-5 w-5" />
+                    </IconBubble>
+                    <h3 className="text-lg font-medium text-white">Problems</h3>
+                  </div>
+                  <ul className="space-y-2">
+                    {problemPoints.map((p, i) => (
+                      <motion.div
+                        key={p.label}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: i * 0.08 }}
+                      >
+                        <PointRow {...p} />
+                      </motion.div>
+                    ))}
+                  </ul>
+                </Card>
 
-              <Card>
-                <div className="mb-5 flex items-center gap-3">
-                  <IconBubble>
-                    <FiStar className="h-5 w-5" />
-                  </IconBubble>
-                  <h3 className="text-lg font-medium text-white">
-                    Contests &amp; community
-                  </h3>
-                </div>
-                <ul className="space-y-2">
-                  {activityPoints.map((p) => (
-                    <PointRow key={p.label} {...p} />
-                  ))}
-                </ul>
-              </Card>
-            </div>
-          </Section>
+                <Card>
+                  <div className="mb-5 flex items-center gap-3">
+                    <IconBubble>
+                      <FiStar className="h-5 w-5" />
+                    </IconBubble>
+                    <h3 className="text-lg font-medium text-white">
+                      Contests &amp; community
+                    </h3>
+                  </div>
+                  <ul className="space-y-2">
+                    {activityPoints.map((p, i) => (
+                      <motion.div
+                        key={p.label}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: i * 0.08 }}
+                      >
+                        <PointRow {...p} />
+                      </motion.div>
+                    ))}
+                  </ul>
+                </Card>
+              </div>
+            </Section>
+          </motion.div>
 
           {/* 3. Levels */}
-          <Section
-            id="levels"
-            eyebrow="level system"
-            title="From Bronze to Diamond"
-            intro="Your total points decide your level."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Card>
-              <div className="mx-auto flex max-w-sm flex-col items-center">
-                {levels.map((l, i) => {
-                  const Icon = l.diamond ? FaGem : FaMedal;
-                  return (
-                    <div key={l.name} className="flex w-full flex-col items-center">
-                      <div className="flex w-full items-center gap-4 rounded-3xl border border-white/5 bg-black/50 p-4">
-                        <div
-                          className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${l.gradient}`}
-                          style={{ boxShadow: `0 0 30px ${l.glow}` }}
-                        >
-                          <Icon className="h-6 w-6 text-black/70" />
+            <Section
+              id="levels"
+              eyebrow="level system"
+              title="From Bronze to Diamond"
+              intro="Your total points decide your level."
+            >
+              <Card>
+                <div className="mx-auto flex max-w-sm flex-col items-center">
+                  {levels.map((l, i) => {
+                    const Icon = l.diamond ? FaGem : FaMedal;
+                    return (
+                      <motion.div
+                        key={l.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: i * 0.12 }}
+                        className="flex w-full flex-col items-center"
+                      >
+                        <div className="flex w-full items-center gap-4 rounded-3xl border border-white/5 bg-black/50 p-4">
+                          <div
+                            className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${l.gradient}`}
+                            style={{ boxShadow: `0 0 30px ${l.glow}` }}
+                          >
+                            <Icon className="h-6 w-6 text-black/70" />
+                          </div>
+                          <div className="flex-1">
+                            <p className={`text-base font-semibold ${l.text}`}>
+                              {l.name}
+                            </p>
+                            <p className="font-mono text-xs text-white/40">
+                              {l.min === 0
+                                ? "starting level"
+                                : `${l.min.toLocaleString("en-US")}+ points`}
+                            </p>
+                          </div>
+                          <span className="font-mono text-lg text-white/70">
+                            {l.min.toLocaleString("en-US")}
+                          </span>
                         </div>
-                        <div className="flex-1">
-                          <p className={`text-base font-semibold ${l.text}`}>
-                            {l.name}
-                          </p>
-                          <p className="font-mono text-xs text-white/40">
-                            {l.min === 0
-                              ? "starting level"
-                              : `${l.min.toLocaleString("en-US")}+ points`}
-                          </p>
-                        </div>
-                        <span className="font-mono text-lg text-white/70">
-                          {l.min.toLocaleString("en-US")}
-                        </span>
-                      </div>
-                      {i < levels.length - 1 && (
-                        <FiArrowDown className="my-2 h-5 w-5 text-blue-500/60" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          </Section>
+                        {i < levels.length - 1 && (
+                          <FiArrowDown className="my-2 h-5 w-5 text-blue-500/60" />
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </Card>
+            </Section>
+          </motion.div>
 
           {/* 4. Moderation */}
-          <Section
-            id="moderation"
-            eyebrow="moderation & consequences"
-            title="When rules are broken"
-            intro="Depending on how serious the violation is, one or more of these can happen."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="grid gap-4 md:grid-cols-4">
-              {consequences.map((c, i) => (
-                <div key={c.title} className="relative">
-                  <div className="h-full rounded-[28px] border-2 border-white/10 bg-[#111111] p-6 shadow-[inset_-1px_0_0_rgba(59,130,246,0.35)]">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.08] text-blue-500">
-                      {c.icon}
+            <Section
+              id="moderation"
+              eyebrow="moderation & consequences"
+              title="When rules are broken"
+              intro="Depending on how serious the violation is, one or more of these can happen."
+            >
+              <div className="grid gap-4 md:grid-cols-4">
+                {consequences.map((c, i) => (
+                  <motion.div
+                    key={c.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                    className="relative"
+                  >
+                    <div className="h-full rounded-[28px] border-2 border-white/10 bg-[#111111] p-6 shadow-[inset_-1px_0_0_rgba(59,130,246,0.35)]">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/[0.08] text-blue-500">
+                        {c.icon}
+                      </div>
+                      <p className="mt-5 font-mono text-xs text-white/30">
+                        step 0{i + 1}
+                      </p>
+                      <p className="mt-1 text-base font-medium text-white">
+                        {c.title}
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-white/50">
+                        {c.desc}
+                      </p>
                     </div>
-                    <p className="mt-5 font-mono text-xs text-white/30">
-                      step 0{i + 1}
-                    </p>
-                    <p className="mt-1 text-base font-medium text-white">
-                      {c.title}
-                    </p>
-                    <p className="mt-1 text-sm leading-relaxed text-white/50">
-                      {c.desc}
-                    </p>
-                  </div>
-                  {i < consequences.length - 1 && (
-                    <div className="absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-[#111111] text-blue-500 md:flex">
-                      <FiArrowRight className="h-4 w-4" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Section>
+                    {i < consequences.length - 1 && (
+                      <div className="absolute -right-4 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-[#111111] text-blue-500 md:flex">
+                        <FiArrowRight className="h-4 w-4" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </Section>
+          </motion.div>
 
           {/* 5. Help board rules */}
-          <Section
-            id="help-board"
-            eyebrow="help board rules"
-            title="Asking and answering"
-            intro="Good questions and respectful answers help everyone learn."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Card>
-              <div className="mb-5 flex items-center gap-3">
-                <IconBubble>
-                  <FiMessageSquare className="h-5 w-5" />
-                </IconBubble>
-                <h3 className="text-lg font-medium text-white">
-                  Help Board checklist
-                </h3>
-              </div>
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {helpBoardRules.map((r) => (
-                  <li
-                    key={r}
-                    className="flex items-center gap-3 rounded-2xl border border-white/5 bg-black/50 px-4 py-3 text-sm text-white/70"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-blue-400">
-                      <FiCheck className="h-3.5 w-3.5" />
-                    </span>
-                    {r}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </Section>
+            <Section
+              id="help-board"
+              eyebrow="help board rules"
+              title="Asking and answering"
+              intro="Good questions and respectful answers help everyone learn."
+            >
+              <Card>
+                <div className="mb-5 flex items-center gap-3">
+                  <IconBubble>
+                    <FiMessageSquare className="h-5 w-5" />
+                  </IconBubble>
+                  <h3 className="text-lg font-medium text-white">
+                    Help Board checklist
+                  </h3>
+                </div>
+                <ul className="grid gap-3 sm:grid-cols-2">
+                  {helpBoardRules.map((r, i) => (
+                    <motion.li
+                      key={r}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.08 }}
+                      className="flex items-center gap-3 rounded-2xl border border-white/5 bg-black/50 px-4 py-3 text-sm text-white/70"
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/15 text-blue-400">
+                        <FiCheck className="h-3.5 w-3.5" />
+                      </span>
+                      {r}
+                    </motion.li>
+                  ))}
+                </ul>
+              </Card>
+            </Section>
+          </motion.div>
 
           {/* 6. Privacy */}
-          <Section
-            id="privacy"
-            eyebrow="privacy rules"
-            title="Your data stays yours"
-            intro="Your work is private unless you choose to share it."
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="grid gap-6 md:grid-cols-3">
-              {privacyRules.map((p) => (
-                <Card key={p.title} className="!p-6">
-                  <IconBubble>{p.icon}</IconBubble>
-                  <p className="mt-5 text-base font-medium text-white">
-                    {p.title}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/50">
-                    {p.desc}
-                  </p>
-                </Card>
-              ))}
-            </div>
-          </Section>
+            <Section
+              id="privacy"
+              eyebrow="privacy rules"
+              title="Your data stays yours"
+              intro="Your work is private unless you choose to share it."
+            >
+              <div className="grid gap-6 md:grid-cols-3">
+                {privacyRules.map((p, i) => (
+                  <motion.div
+                    key={p.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.1 }}
+                  >
+                    <Card className="!p-6">
+                      <IconBubble>{p.icon}</IconBubble>
+                      <p className="mt-5 text-base font-medium text-white">
+                        {p.title}
+                      </p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-white/50">
+                        {p.desc}
+                      </p>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </Section>
+          </motion.div>
         </div>
       </div>
     </main>
   );
-}
