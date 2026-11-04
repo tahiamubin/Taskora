@@ -45,8 +45,8 @@ const studentNavLinks: NavLink[] = [
   { icon: FiGrid, label: "Overview", href: "/dashboard/student" },
   { icon: FiCode, label: "Code Zone", href: "/dashboard/student/code-zone" },
   { icon: FiBookOpen, label: "Interview Prep", href: "/dashboard/student/interview-prep" },
-  { icon: FiAward, label: "Contest Points", href: "/dashboard/student/contests" },
-  { icon: FiBarChart2, label: "Leaderboard", href: "/dashboard/student/leaderboard" },
+  // { icon: FiAward, label: "Contest Points", href: "/dashboard/student/contests" },
+  // { icon: FiBarChart2, label: "Leaderboard", href: "/dashboard/student/leaderboard" },
   { icon: FiHelpCircle, label: "Ask for Help", href: "/dashboard/student/help" },
   { icon: FiHelpCircle, label: "Shared Help", href: "/dashboard/student/shared-help" },
 ];
